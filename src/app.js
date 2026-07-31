@@ -1,5 +1,5 @@
 /* ==========================================================================
-   app.js — screens and routing.
+   app.js, screens and routing.
    ========================================================================== */
 'use strict';
 
@@ -8,12 +8,12 @@
   const SC = () => document.getElementById('screen');
   const TIERNAME = { 1: 'do first', 2: 'high', 3: 'last' };
 
-  /* The exam date is whatever the learner tells us — nothing is baked in, so
+  /* The exam date is whatever the learner tells us. Nothing is baked in, so
      this still works for next year's cohort. */
   function countdown(dl) {
     const iso = V.examDate();
     const shape = 'The format has been stable for a decade: <b>MC (20 points) plus three open questions ' +
-      '(100) = 120 points in 120 minutes</b> — one point per minute. No formula sheet, tables drawn by hand.';
+      '(100) = 120 points in 120 minutes</b>, one point per minute. No formula sheet, tables drawn by hand.';
     if (!iso) {
       return '<div class="banner"><div><div class="big">?</div><div class="lbl">exam date</div></div>' +
         '<div class="txt"><b>Set your exam date</b> to switch on the countdown and to date the study plan. ' +
@@ -22,7 +22,7 @@
         'color:var(--ink);border-radius:7px;padding:8px 10px;font:inherit;font-size:13px">' +
         '<button class="btn sm" style="margin-left:8px" onclick="VBM.saveDate()">Set</button></div></div>';
     }
-    const label = dl > 1 ? 'days left' : dl === 1 ? 'day left — tomorrow' : dl === 0 ? 'today' : 'days ago';
+    const label = dl > 1 ? 'days left' : dl === 1 ? 'day left (tomorrow)' : dl === 0 ? 'it is today' : 'days ago';
     const cls = dl != null && dl <= 2 && dl >= 0 ? ' style="border-left-color:var(--bad)"' : '';
     return '<div class="banner"' + cls + '><div><div class="big">' + Math.abs(dl) + '</div>' +
       '<div class="lbl">' + label + '</div></div>' +
@@ -55,9 +55,9 @@
       'or a figure was derived rather than taken from an official answer key.</p>' +
       '<div class="src"><b>Your lecture slides, exercise sheets and the official solutions are the source of ' +
       'truth.</b> Where this tool disagrees with them, they are right and it is wrong.</div>' +
-      '<p>Use it to drill mechanics and spot patterns — not as your only source, and not as a substitute for ' +
+      '<p>Use it to drill mechanics and spot patterns. Not as your only source, and not as a substitute for ' +
       'the course material.</p>' +
-      '<div class="btnrow"><button class="btn" onclick="VBM.ack()">Understood — open the desk</button></div>' +
+      '<div class="btnrow"><button class="btn" onclick="VBM.ack()">Got it, open the desk</button></div>' +
       '</div>';
     document.body.appendChild(el);
     const b = el.querySelector('button'); if (b) b.focus();
@@ -86,13 +86,14 @@
     h += countdown(dl);
 
     h += '<h1>The Value Desk</h1>';
-    h += '<p class="sub">An unofficial training floor for the Value-based Management course. Every figure is ' +
-      'transcribed from a past paper and, where a key was published, checked against it. Work the modules ' +
-      'top-down — they are ordered by points per hour of study, not by lecture order.</p>';
+    h += '<p class="sub">An unofficial trainer for Value-based Management. You draw the tables, you write the ' +
+      'formulas from memory, and when you get something wrong it tells you <i>which</i> mistake you made. ' +
+      'Work the modules top to bottom: they are sorted by how many marks they are worth per hour of study, ' +
+      'not by lecture order.</p>';
 
     const nr = V.nextRank();
     h += '<div class="qnote" style="margin-bottom:18px">Rank <b>' + V.rank() + '</b> · ' +
-      V.S.xp + ' EVA' + (nr ? ' — ' + (nr.at - V.S.xp) + ' more to reach <b>' + nr.name + '</b>' : ' — top rank reached') +
+      V.S.xp + ' EVA' + (nr ? ', ' + (nr.at - V.S.xp) + ' more to reach <b>' + nr.name + '</b>' : ', top rank') +
       (V.S.best > 1 ? ' · best streak ' + V.S.best : '') + '</div>';
 
     if (weak.length) {
@@ -100,7 +101,7 @@
       h += '<div class="rows"><button class="row" onclick="VBM.runList(\'review\')">' +
         '<span class="idx">↻</span><span class="body"><span class="t">' + weak.length +
         ' drill' + (weak.length === 1 ? '' : 's') + ' to redo</span>' +
-        '<span class="d">Things you got wrong or revealed and have not yet cleared. Clear these first — they are your cheapest marks.</span>' +
+        '<span class="d">Things you got wrong or revealed and have not yet cleared. Clear these first. They are your cheapest marks.</span>' +
         '</span></button></div>';
     }
 
@@ -134,11 +135,14 @@
     h += '<button class="row" onclick="VBM.go(\'vault\')"><span class="idx">ƒ</span><span class="body">' +
       '<span class="t">The Vault</span><span class="d">Every formula you must memorise, tier by tier, with the traps attached. ' +
       'No formula sheet is permitted in the exam.</span></span></button>';
+    h += '<button class="row" onclick="VBM.go(\'intuition\')"><span class="idx">✦</span><span class="body">' +
+      '<span class="t">Intuition Deck</span><span class="d">The mental picture behind every formula, in one pass. ' +
+      'Read this when a formula refuses to stick, or the night before as a warm-up.</span></span></button>';
     h += '</div>';
 
-    h += '<p class="footnote">Unofficial student project — not affiliated with TUM; your course material is the ' +
+    h += '<p class="footnote">Unofficial student project, not affiliated with TUM; your course material is the ' +
       'source of truth. <button class="btn ghost sm" onclick="VBM.showNotice()">Read the notice</button><br><br>' +
-      'Progress is saved in this browser only — nothing leaves your device. ' +
+      'Progress is saved in this browser only. Nothing leaves your device. ' +
       '<button class="btn ghost sm" onclick="VBM.wipe()">Reset progress</button></p>';
 
     SC().innerHTML = h;
@@ -192,7 +196,7 @@
       const t = RUN ? RUN.title : '';
       const back = RUN && RUN.kind !== 'review' ? RUN.kind : null;
       RUN = null;
-      let h = '<h1>Module complete</h1><p class="sub">' + t + ' — every drill in the list is done. ' +
+      let h = '<h1>Module complete</h1><p class="sub">' + t + ': every drill in the list is done. ' +
         'Anything you revealed is now in the review queue on the desk.</p><div class="btnrow">' +
         '<button class="btn" onclick="VBM.go(\'home\')">Back to the desk</button>' +
         (back ? '<button class="btn ghost" onclick="VBM.go(\'chapter\',\'' + back + '\')">Review this module</button>' : '') +
@@ -227,9 +231,10 @@
       '<div><div class="k">Time</div><div class="v">' + x.minutes + '\'</div></div>' +
       '</div>';
     h += '<div class="coach info" style="margin-top:14px"><div class="ch">House rules</div>' +
-      '<p>No hints. No revealed answers. No feedback until you hand the paper in. ' +
-      'One submission per question, then it is gone.</p><p>' + x.note + '</p></div>';
-    h += '<div class="btnrow"><button class="btn" onclick="VBM.startExam(\'' + id + '\')">Begin — start the clock</button>' +
+      '<p>No hints, no revealed answers, and nothing marked until you hand the paper in. ' +
+      'One shot per question, then it is gone. You get the full breakdown at the end and you can rework ' +
+      'anything you dropped.</p><p>' + x.note + '</p></div>';
+    h += '<div class="btnrow"><button class="btn" onclick="VBM.startExam(\'' + id + '\')">Begin: start the clock</button>' +
       '<button class="btn ghost" onclick="VBM.go(\'home\')">Not yet</button></div></div>';
     h += '<p class="footnote">Reminder: this is an unofficial student reconstruction of past papers. ' +
       'Point weights and wording are approximations of the originals, and auto-marking cannot judge a written ' +
@@ -314,7 +319,7 @@
       const lbl = r.s >= 0.999 ? 'full' : (r.s > 0 ? Math.round(r.s * 100) + '%' : 'lost');
       h += '<button class="row" onclick="VBM.reviewOne(\'' + r.q.id + '\')">' +
         '<span class="idx">' + (i + 1) + '</span><span class="body"><span class="t">' + r.d.title + '</span>' +
-        '<span class="d">' + Math.round(r.s * (r.d.pts || 0) * 10) / 10 + ' of ' + (r.d.pts || 0) + ' points — tap to rework it with hints</span></span>' +
+        '<span class="d">' + Math.round(r.s * (r.d.pts || 0) * 10) / 10 + ' of ' + (r.d.pts || 0) + ' points, tap to rework it with hints</span></span>' +
         '<span class="rt"><span class="badge ' + cls + '">' + lbl + '</span></span></button>';
     });
     h += '</div>';
@@ -340,14 +345,14 @@
     let h = '<div class="eyebrow">Reference</div><h1>Pattern Board</h1>';
     h += '<p class="sub">The course Q&amp;A slide states the paper will be "equivalent in structure, content and ' +
       'level of detail to previous exams". If that still holds for your semester, the past papers are a ' +
-      'specification rather than practice. Here is what they actually contain — verify the format against ' +
+      'specification rather than practice. Here is what they actually contain, verify the format against ' +
       'your own semester\'s announcements.</p>';
 
     h += '<div class="eyebrow">The exam, decoded</div><div class="card">';
     for (const [k, vv] of P.facts) h += '<p style="margin:0 0 10px"><b>' + k + '.</b> ' + vv + '</p>';
     h += '</div>';
 
-    h += '<div class="eyebrow">What actually gets examined — all eight papers</div>';
+    h += '<div class="eyebrow">What actually gets examined. All eight papers</div>';
     h += '<div class="pwrap"><table class="pat"><thead><tr><th>Topic</th>' +
       P.exams.map(e => '<th>' + e.k + '<br><span style="font-weight:400;opacity:.6">' + e.kind + '</span></th>').join('') +
       '<th>Rate</th></tr></thead><tbody>';
@@ -356,7 +361,7 @@
       for (const x of r.hit) {
         if (x === 'y') h += '<td class="y">✓</td>';
         else if (x === 'mc') h += '<td class="mc">MC</td>';
-        else h += '<td class="n">–</td>';
+        else h += '<td class="n">-</td>';
       }
       const bg = r.tier === 1 ? 'var(--tier1)' : r.tier === 2 ? 'var(--tier2)' : 'var(--tier3)';
       h += '<td class="rate" style="background:' + bg + '">' + r.rate + '</td></tr>';
@@ -367,7 +372,7 @@
 
     h += '<div class="eyebrow">' + P.prediction.head + '</div><div class="card"><p style="margin-top:0">' +
       P.prediction.body + '</p>';
-    for (const [k, vv] of P.prediction.fams) h += '<p><b>' + k + '</b> — ' + vv + '</p>';
+    for (const [k, vv] of P.prediction.fams) h += '<p><b>' + k + '</b>, ' + vv + '</p>';
     h += '<p style="margin-bottom:0"><b>' + P.prediction.tail + '</b></p></div>';
 
     h += '<div class="eyebrow">How marks are actually awarded</div><div class="card">';
@@ -381,8 +386,8 @@
     const dl = V.daysLeft();
     const N = P.plan.length;
     h += '<div class="eyebrow">The ' + N + '-day plan' +
-      (dl == null ? '' : dl > 0 ? ' — ' + dl + ' day' + (dl === 1 ? '' : 's') + ' left'
-        : dl === 0 ? ' — exam today' : ' — exam has passed') + '</div>';
+      (dl == null ? '' : dl > 0 ? ', ' + dl + ' day' + (dl === 1 ? '' : 's') + ' left'
+        : dl === 0 ? ': exam today' : ': exam has passed') + '</div>';
     if (dl != null && dl > 0 && dl < N) {
       h += '<div class="coach bad"><div class="ch">Compressed</div><p>Only ' + dl + ' day' +
         (dl === 1 ? '' : 's') + ' remain for a ' + N + '-day plan. ' + P.short + '</p></div>';
@@ -408,14 +413,14 @@
   /* ============================================================ VAULT */
   function vault() {
     let h = '<div class="eyebrow">Reference</div><h1>The Vault</h1>';
-    h += '<p class="sub">No formula sheet is permitted — only a non-programmable calculator and a dictionary. ' +
+    h += '<p class="sub">No formula sheet is permitted. Only a non-programmable calculator and a dictionary. ' +
       'Everything below has to be in your head. Reading it is not learning it: use the ' +
       '<b>write the formula</b> drills in the modules to produce each one from a blank page.</p>';
 
     for (const tier of [1, 2, 3]) {
       const list = V.data.formulas.filter(f => f.tier === tier);
       if (!list.length) continue;
-      h += '<div class="eyebrow">Tier ' + tier + ' — ' +
+      h += '<div class="eyebrow">Tier ' + tier + ', ' +
         (tier === 1 ? 'memorise cold, these carry the paper' : tier === 2 ? 'high value' : 'know them for the MC') +
         '</div>';
       for (const f of list) {
@@ -432,7 +437,7 @@
         }
         if (f.notes) for (const n of f.notes) h += '<p class="vnote">' + n + '</p>';
         if (f.verbal) {
-          h += '<div class="coach ok" style="margin-top:12px"><div class="ch">Learn verbatim — ' + f.verbal.pts + ' points</div>' +
+          h += '<div class="coach ok" style="margin-top:12px"><div class="ch">Learn verbatim, ' + f.verbal.pts + ' points</div>' +
             '<p><i>' + f.verbal.q + '</i></p><p>' + f.verbal.a + '</p></div>';
         }
         if (f.trap) h += '<div class="vtrap"><b>Trap.</b> ' + f.trap + '</div>';
@@ -440,7 +445,40 @@
       }
     }
     h += '<div class="btnrow"><button class="btn" onclick="VBM.go(\'home\')">Back to the desk</button>' +
+      '<button class="btn ghost" onclick="VBM.go(\'intuition\')">Intuition Deck</button>' +
       '<button class="btn ghost" onclick="VBM.runList(\'traps\')">Run the Trap Radar</button></div>';
+    SC().innerHTML = h;
+  }
+
+  /* ============================================================ INTUITION DECK */
+  function intuition() {
+    const I = V.data.intuition || {};
+    let h = '<div class="eyebrow">Reference</div><h1>Intuition Deck</h1>';
+    h += '<p class="sub">Twenty-two formulas and procedures, each with the picture that makes it '
+      + 'rebuildable rather than merely rememberable. If you can say the bold line out loud, you can '
+      + 'reconstruct the formula on a blank page, which is the only thing that matters in a closed-book exam.</p>';
+
+    for (const ch of V.data.chapters) {
+      const ids = ch.drills.filter(id => I[id]);
+      if (!ids.length) continue;
+      h += '<div class="eyebrow">' + ch.n + ' · ' + ch.title + '</div>';
+      for (const id of ids) {
+        const it = I[id], d = V.data.drills[id];
+        h += '<div class="card" style="margin-top:10px">';
+        h += '<div class="qmeta" style="margin-bottom:6px">' + d.title + '</div>';
+        h += '<p class="hook" style="font-size:17px;font-weight:800;color:var(--accent);margin:0 0 10px;line-height:1.35">'
+          + it.hook + '</p>';
+        h += '<p style="font-size:14px;line-height:1.6;margin:0 0 10px">' + it.story + '</p>';
+        if (it.sticky) {
+          h += '<p class="sticky" style="font-size:13.5px;background:var(--panel2);border:1px solid var(--line);'
+            + 'border-radius:6px;padding:10px 12px;color:var(--muted);margin:0 0 12px">' + it.sticky + '</p>';
+        }
+        h += '<button class="btn ghost sm" onclick="VBM.reviewOne(\'' + id + '\')">Drill this one</button>';
+        h += '</div>';
+      }
+    }
+    h += '<div class="btnrow"><button class="btn" onclick="VBM.go(\'home\')">Back to the desk</button>' +
+      '<button class="btn ghost" onclick="VBM.go(\'vault\')">Open the Vault</button></div>';
     SC().innerHTML = h;
   }
 
@@ -452,6 +490,7 @@
     if (name === 'chapter') chapter(arg);
     else if (name === 'pattern') pattern();
     else if (name === 'vault') vault();
+    else if (name === 'intuition') intuition();
     else if (name === 'exambrief') exambrief(arg);
     else home();
     V.rail();

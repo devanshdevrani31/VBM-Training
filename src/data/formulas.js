@@ -1,5 +1,5 @@
 /* ==========================================================================
-   formulas.js — The Vault.  No formula sheet is permitted in the exam, so
+   formulas.js · The Vault.  No formula sheet is permitted in the exam, so
    everything here has to end up in your head.  Grouped in the same tiers the
    past papers reward.
    ========================================================================== */
@@ -9,7 +9,7 @@ VBM.data.formulas = [
 
   /* ------------------------------------------------------------------ D1 */
   {
-    id: 'D1', tier: 1, title: 'EVA — core',
+    id: 'D1', tier: 1, title: 'EVA: core',
     desc: 'On 8 of 8 past papers. Both forms are examinable; the second one is what MC questions attack.',
     fml: [
       'EVA = NOPAT − WACC × Invested Capital     (= NOPAT − Capital Charges)',
@@ -17,7 +17,7 @@ VBM.data.formulas = [
       'RONA = NOPAT / Net Assets'
     ],
     notes: [
-      'If <b>RONA &gt; WACC</b> and invested capital is positive, EVA is <b>strictly positive</b> — it cannot be negative. That exact sentence is an MC item on SS17 and SS19.',
+      'If <b>RONA &gt; WACC</b> and invested capital is positive, EVA is <b>strictly positive</b>: it cannot be negative. That exact sentence is an MC item on SS17 and SS19.',
       'A <b>negative EVA is a perfectly normal answer</b>. The official test-exam answer is −13,140.'
     ]
   },
@@ -33,7 +33,7 @@ VBM.data.formulas = [
     ],
     notes: [
       '<b>Why the tax shield is subtracted:</b> NOPAT must be as-if-unlevered. The reported tax bill was already reduced by deducting interest, so that benefit has to be removed again.',
-      '<b>Interest income:</b> add it only when the paper carries the footnote "interest income stems from cash and marketable securities held for operating activities" (SS23–SS26 do). SS17 and SS19 have no interest income at all.'
+      '<b>Interest income:</b> add it only when the paper carries the footnote "interest income stems from cash and marketable securities held for operating activities" (SS23-SS26 do). SS17 and SS19 have no interest income at all.'
     ],
     trap: 'Forgetting <b>− t × interest expense</b>. It is worth explicit marks in every single official key.'
   },
@@ -47,15 +47,15 @@ VBM.data.formulas = [
       'Ø Invested Capital = ½ × (IC_beginning + IC_end)'
     ],
     notes: [
-      'Long-term debt and other non-current liabilities are <b>never</b> subtracted — only <i>non-interest-bearing current</i> items are.',
-      'Default to the <b>average</b> invested capital unless the question explicitly says otherwise. SS19 Q4 does say otherwise ("measure the invested capital by the invested capital at the beginning of the period") — read it.'
+      'Long-term debt and other non-current liabilities are <b>never</b> subtracted: only <i>non-interest-bearing current</i> items are.',
+      'Default to the <b>average</b> invested capital unless the question explicitly says otherwise. SS19 Q4 does say otherwise ("measure the invested capital by the invested capital at the beginning of the period"). Read it.'
     ],
     trap: 'Subtracting <b>short-term debt</b>. It is interest-bearing, so it <b>stays inside</b> invested capital. The papers plant the footnote <i>"the position other current liabilities does not include interest-bearing liabilities"</i> precisely to tell you that line belongs in NIBL.'
   },
 
   /* ------------------------------------------------------------------ D2 */
   {
-    id: 'D2', tier: 1, title: 'Accounting adjustment — capitalising R&D or advertising',
+    id: 'D2', tier: 1, title: 'Accounting adjustment, capitalising R&D or advertising',
     desc: 'Paired with the EVA question on 8 of 8 papers, always worth about 10 points.',
     fml: [
       'Annual amortisation of the year-k spend = Expense_k / N        (N = amortisation years)',
@@ -86,7 +86,7 @@ VBM.data.formulas = [
     verbal: {
       pts: 6,
       q: 'Will the manager decide in the shareholders\' interest under RBCAR? Why? Refer to time preferences.',
-      a: 'The relative benefit cost allocation rule guarantees that the residual income in each period is <b>proportional to the NPV</b> of the project. A positive-NPV project therefore produces a positive residual income in <b>every</b> period, and a negative-NPV project a negative one in every period. Hence the manager always decides in the shareholders\' interest, and this holds <b>independently of the manager\'s time preferences</b> — this is <b>strong goal congruence</b>.'
+      a: 'The relative benefit cost allocation rule guarantees that the residual income in each period is <b>proportional to the NPV</b> of the project. A positive-NPV project therefore produces a positive residual income in <b>every</b> period, and a negative-NPV project a negative one in every period. Hence the manager always decides in the shareholders\' interest, and this holds <b>independently of the manager\'s time preferences</b>: this is <b>strong goal congruence</b>.'
     }
   },
   {
@@ -124,19 +124,19 @@ VBM.data.formulas = [
       ]
     },
     notes: [
-      '<b>Preinreich–Lücke theorem:</b> the NPV of all future EVAs / residual incomes is the <b>same under any depreciation schedule</b> and equals the project\'s NPV. SS19 Q4.4 explicitly allows "NPV of RIs = NPV of the project" as a full-mark one-liner — <i>with</i> an explanation.'
+      '<b>Preinreich-Lücke theorem:</b> the NPV of all future EVAs / residual incomes is the <b>same under any depreciation schedule</b> and equals the project\'s NPV. SS19 Q4.4 explicitly allows "NPV of RIs = NPV of the project" as a full-mark one-liner, <i>with</i> an explanation.'
     ]
   },
 
   /* ------------------------------------------------------------------ D5 */
   {
-    id: 'D5', tier: 1, title: 'Goal congruence — the three definitions',
+    id: 'D5', tier: 1, title: 'Goal congruence, the three definitions',
     desc: 'Learn these verbatim. 8 of 8 papers, and the wording is what earns the marks.',
     table: {
       head: ['Type', 'Definition', 'Criterion'],
       rows: [
         ['<b>Weak</b>', 'The manager decides in the shareholders\' interest <b>if and only if</b> the manager\'s time preference (discount rate) is <b>identical</b> to the shareholders\'.', 'E[Σ k_t·RI_t | θ] for k_t <b>equal to the owner\'s</b>'],
-        ['<b>Strong</b>', 'Decisions stay aligned <b>even when</b> the manager\'s and shareholders\' discount rates <b>differ</b> — assuming no uncertainty, or a risk-neutral manager.', 'E[Σ k_t·RI_t | θ] for arbitrary <b>non-negative</b> k_t'],
+        ['<b>Strong</b>', 'Decisions stay aligned <b>even when</b> the manager\'s and shareholders\' discount rates <b>differ</b>: assuming no uncertainty, or a risk-neutral manager.', 'E[Σ k_t·RI_t | θ] for arbitrary <b>non-negative</b> k_t'],
         ['<b>Robust</b>', 'Decisions stay aligned when preferences differ <b>and</b> there is uncertainty <b>and</b> the manager is risk-averse.', 'E[U(RI_1,…,RI_T) | θ] for any U weakly increasing in each argument']
       ]
     }
@@ -144,7 +144,7 @@ VBM.data.formulas = [
 
   /* ------------------------------------------------------------------ D6 */
   {
-    id: 'D6', tier: 2, title: 'Cost of capital — CAPM and WACC',
+    id: 'D6', tier: 2, title: 'Cost of capital. CAPM and WACC',
     desc: 'Recurring MC every year plus a cheap 3-point sub-question.',
     fml: [
       'WACC = S/(S+B) · r_S  +  B/(S+B) · r_B · (1 − T_C)',
@@ -153,10 +153,10 @@ VBM.data.formulas = [
       'Un-/re-levering:  β_U = β_L / [1 + (1−T_C)·B/S]     then     β_L^own = β_U · [1 + (1−T_C)·B^own/S^own]'
     ],
     notes: [
-      '<b>Systematic (market) risk</b> — GDP, inflation, interest rates. Cannot be diversified away; the market pays you for bearing it. This is what β measures.',
-      '<b>Unsystematic (company-specific, idiosyncratic) risk</b> — management errors, production downtime. <b>Can</b> be diversified away, so the market does <b>not</b> pay for it.'
+      '<b>Systematic (market) risk</b>: GDP, inflation, interest rates. Cannot be diversified away; the market pays you for bearing it. This is what β measures.',
+      '<b>Unsystematic (company-specific, idiosyncratic) risk</b>: management errors, production downtime. <b>Can</b> be diversified away, so the market does <b>not</b> pay for it.'
     ],
-    trap: 'β divides by the variance of the <b>market</b> return — never by the variance of the firm\'s own return, and never by the variance of stock <i>prices</i>. SS17 hands you Var(own) = 0.06 purely as a distractor; SS19 MC Q10 asks it directly.'
+    trap: 'β divides by the variance of the <b>market</b> return: never by the variance of the firm\'s own return, and never by the variance of stock <i>prices</i>. SS17 hands you Var(own) = 0.06 purely as a distractor; SS19 MC Q10 asks it directly.'
   },
 
   /* ------------------------------------------------------------------ D7 */
@@ -194,7 +194,7 @@ VBM.data.formulas = [
   /* ------------------------------------------------------------------ D8 */
   {
     id: 'D8', tier: 3, title: 'Free cash flow, and the EVA / MVA / DCF identities',
-    desc: 'MC only — but three years running.',
+    desc: 'MC only, but three years running.',
     fml: [
       'EBITDA − D&A − Taxes = NOPAT   + D&A − CapEx − ΔWCR = Free Cash Flow',
       'MVA = Σ EVA_t /(1+WACC)^t',
@@ -206,12 +206,12 @@ VBM.data.formulas = [
       '<b>EBIT bottom-up</b> (the route recommended in the lecture): Net profit + income taxes = EBT; EBT + interest & other financial expense − interest & other financial income = EBIT.',
       '<b>EBIT top-down:</b> Net sales − COGS = gross profit; − SG&A − R&D − other = EBITDA; − D&A = EBIT.'
     ],
-    trap: 'The statement "the market value of a firm equals the PV of future EVAs" <b>alone</b> is wrong — it omits invested capital. So is "PV of EVAs <i>minus</i> invested capital = PV of FCFs".'
+    trap: 'The statement "the market value of a firm equals the PV of future EVAs" <b>alone</b> is wrong: it omits invested capital. So is "PV of EVAs <i>minus</i> invested capital = PV of FCFs".'
   },
 
   /* ------------------------------------------------------------------ D9 */
   {
-    id: 'D9', tier: 2, title: 'Capitalising operating leases — the five steps',
+    id: 'D9', tier: 2, title: 'Capitalising operating leases, the five steps',
     desc: 'Pure recall, 5 points, asked almost verbatim on SS17 (1.4) and SS19 (1.3).',
     fml: [
       '1. Invested capital: compute the lease liability as the present value of future lease payments; add it to invested capital.',
@@ -228,15 +228,15 @@ VBM.data.formulas = [
   /* ------------------------------------------------------------------ D10 */
   {
     id: 'D10', tier: 1, title: 'Bonus banks',
-    desc: '25–40 points when it appears, and it appeared on 3 of the 4 real exams.',
+    desc: '25-40 points when it appears, and it appeared on 3 of the 4 real exams.',
     fml: [
       'Bonus earned_t = target bonus + y × (EVA_t − target / expected EVA)',
       'Cumulative bonus earned = cumulative bonus paid + ending bonus bank'
     ],
     notes: [
       '<b>The bank table always has the same five rows:</b> bank beginning (= prior ending × (1+r)) · bonus earned · bank after earned bonus · bonus paid out · bank ending.',
-      '<b>Read the payout rule — it changes between papers.</b> SS19: target bonus 35,000 + <b>20%</b> of the amount in excess, capped at the bank balance, nothing paid when the bank is negative. SS17: target bonus + <b>one third</b> of the remainder, capped at the bank value. Problem Set 3: the bonus is split into <b>three equal tranches</b>, one paid immediately and the other two in the following two years with interest at the WACC.',
-      '<b>Why interest is paid on the bank</b> — it compensates the manager for delayed payment and reflects the time value of money. <b>Why also on negative balances</b> — it keeps incentives symmetric and prevents excessive risk-taking. <b>Why EVA <i>improvements</i> rather than levels</b> — a division with a structurally negative EVA could otherwise never earn a bonus, and one with a high EVA would be paid for inherited performance.'
+      '<b>Read the payout rule. It changes between papers.</b> SS19: target bonus 35,000 + <b>20%</b> of the amount in excess, capped at the bank balance, nothing paid when the bank is negative. SS17: target bonus + <b>one third</b> of the remainder, capped at the bank value. Problem Set 3: the bonus is split into <b>three equal tranches</b>, one paid immediately and the other two in the following two years with interest at the WACC.',
+      '<b>Why interest is paid on the bank</b>: it compensates the manager for delayed payment and reflects the time value of money. <b>Why also on negative balances</b>: it keeps incentives symmetric and prevents excessive risk-taking. <b>Why EVA <i>improvements</i> rather than levels</b>: a division with a structurally negative EVA could otherwise never earn a bonus, and one with a high EVA would be paid for inherited performance.'
     ],
     verbal: {
       pts: 3,
@@ -248,16 +248,16 @@ VBM.data.formulas = [
   /* ------------------------------------------------------------------ D11 */
   {
     id: 'D11', tier: 2, title: 'Real options',
-    desc: 'A guaranteed MC item, and a full 32–38 point question on SS17 and WT16.',
+    desc: 'A guaranteed MC item, and a full 32-38 point question on SS17 and WT16.',
     fml: [
       'The three defining characteristics:   Irreversibility  ·  Uncertainty  ·  Flexibility',
-      'Wait if   E[V_0(c_2)] > V_0(c_1)      — the discounted expected value of waiting beats investing now'
+      'Wait if   E[V_0(c_2)] > V_0(c_1): the discounted expected value of waiting beats investing now'
     ],
     notes: [
-      'To achieve <b>strong goal congruence</b> with an option to wait, the <b>option value must itself be capitalised and depreciated</b> — charged when the option is exercised or expires. Treated that way, no knowledge of the manager\'s discount rate is needed.',
+      'To achieve <b>strong goal congruence</b> with an option to wait, the <b>option value must itself be capitalised and depreciated</b>: charged when the option is exercised or expires. Treated that way, no knowledge of the manager\'s discount rate is needed.',
       'Types: option to wait/defer, to expand, to abandon, to switch, to temporarily shut down.'
     ],
-    trap: 'The distractor asked every single year: <i>"Reversibility: management can reverse fund allocation decisions."</i> The real characteristic is <b>IRREVERSIBILITY</b>. Also: an option to wait is <b>not</b> the option to temporarily shut down and resume — that is a separate option type.'
+    trap: 'The distractor asked every single year: <i>"Reversibility: management can reverse fund allocation decisions."</i> The real characteristic is <b>IRREVERSIBILITY</b>. Also: an option to wait is <b>not</b> the option to temporarily shut down and resume. That is a separate option type.'
   },
 
   /* ------------------------------------------------------------------ D12 */

@@ -1,5 +1,5 @@
 /* ==========================================================================
-   drillui.js — the drill runner.
+   drillui.js, the drill runner.
    Practice mode: guided, one step at a time, escalating hints, answer only
    when you have genuinely tried. Exam mode: everything at once, no help.
    ========================================================================== */
@@ -39,6 +39,25 @@
 
   function coach(kind, head, body) {
     return '<div class="coach ' + kind + '"><div class="ch">' + head + '</div>' + body + '</div>';
+  }
+
+  /* The mental picture behind a formula. Collapsed by default so it does not
+     spoil the drill, forced open once the drill is finished so it always gets
+     read at least once. Suppressed under exam conditions like every other aid. */
+  function intuBox() {
+    const it = (V.data.intuition || {})[R.drill.id];
+    if (!it || R.mode === 'exam') return '';
+    const open = !!R.showIntu || R.done;
+    let h = '<div class="intu' + (open ? ' open' : '') + '">';
+    h += '<button class="intuhead" onclick="VBM.Drill.act(\'intu\')" aria-expanded="' + open + '">'
+      + '<span class="bulb">✦</span>'
+      + '<span class="il">' + (open ? 'The intuition' : 'The intuition (open this if the formula will not stick)') + '</span>'
+      + '<span class="chev">' + (open ? '−' : '+') + '</span></button>';
+    if (open) {
+      h += '<div class="intubody"><p class="hook">' + it.hook + '</p><p>' + it.story + '</p>'
+        + (it.sticky ? '<p class="sticky">' + it.sticky + '</p>' : '') + '</div>';
+    }
+    return h + '</div>';
   }
 
   /* Shell around every drill. */
@@ -107,13 +126,14 @@
   }
 
   const DONE_MSG = {
-    clean: ['ok', 'Clean', 'No hints, no reveals, nothing wrong along the way. That is exam pace.'],
-    guided: ['hint', 'Right — with help',
-      'You got there, but you needed a nudge, so it is not yet automatic. Re-run it later without hints and it will be.'],
-    wrong: ['bad', 'Partly right',
-      'Some of it did not land. Read the explanation below, then run it again — this drill stays in your review queue until you clear it.'],
-    revealed: ['bad', 'Answer revealed — this one comes back',
-      'It is now in your review queue on the desk. Come back to it before the exam; a formula you have read is not a formula you can write.']
+    clean: ['ok', 'Clean run',
+      'No hints, no reveals, nothing wrong on the way. That is the pace you want on the day.'],
+    guided: ['hint', 'Got there with a nudge',
+      'Correct in the end, but it is not automatic yet. Come back to this one later and do it cold.'],
+    wrong: ['bad', 'Partly there',
+      'Some of it did not land. Have a read below, then run it again. It stays in your review queue until you clear it.'],
+    revealed: ['bad', 'Answer revealed, so this one comes back',
+      'It is in your review queue now. Worth another go before the exam, because a formula you have read is not a formula you can write.']
   };
 
   function paintDone() {
@@ -203,6 +223,7 @@
         b += '<div class="bank">' + R.bank.map((t, i) =>
           '<button onclick="VBM.Drill.act(\'push\',' + i + ')">' + t + '</button>').join('') + '</div>';
       }
+      b += intuBox();
       document.getElementById('drillhost').innerHTML = shell(b);
       if (!R.done) helpBtns(R.seq.length > 0, d.hints, [{ t: 'Clear', a: 'clear', cls: 'ghost' }]);
     },
@@ -226,10 +247,10 @@
         const missing = d.tokens.filter(t => !used.includes(V.tnorm(t)));
         let m = '';
         if (wrong.length) m = '<p>These do not belong: <b>' + wrong.join('</b>, <b>') + '</b>. Take them out.</p>';
-        else if (missing.length) m = '<p>Every token you used belongs — but <b>' + missing.length + '</b> ' +
+        else if (missing.length) m = '<p>Every token you used belongs, but <b>' + missing.length + '</b> ' +
           (missing.length === 1 ? 'is' : 'are') + ' still missing.</p>';
         else m = '<p>Right tokens, wrong order. Read it left to right as a sentence.</p>';
-        setCoach(coach('bad', 'Not yet', m + (R.att >= 2 ? '<p>Try a hint — or reveal it and read the explanation carefully.</p>' : '')));
+        setCoach(coach('bad', 'Not yet', m + (R.att >= 2 ? '<p>Try a hint, or reveal it and read the explanation carefully.</p>' : '')));
         helpBtns(true, d.hints, [{ t: 'Clear', a: 'clear', cls: 'ghost' }]);
         return;
       }
@@ -273,6 +294,7 @@
         b += '<div class="bank">' + R.bank.map((s, i) =>
           '<button onclick="VBM.Drill.act(\'push\',' + i + ')">' + s.t + '</button>').join('') + '</div>';
       }
+      b += intuBox();
       document.getElementById('drillhost').innerHTML = shell(b, { prog: progress(d.items.length, R.seq.length, null) });
       if (!R.done) helpBtns(R.seq.length === d.items.length, d.hints, R.seq.length ? [{ t: 'Undo', a: 'pop', cls: 'ghost' }] : null);
     },
@@ -340,7 +362,7 @@
       if (R.picked != null) {
         const ok = R.picked === cur.b;
         if (R.mode === 'practice') {
-          setCoach(coach(ok ? 'ok' : 'bad', ok ? 'Yes' : 'No — ' + d.buckets[cur.b],
+          setCoach(coach(ok ? 'ok' : 'bad', ok ? 'Yes' : 'No, ' + d.buckets[cur.b],
             '<p>' + cur.why + '</p>'));
           btns([{ t: R.at + 1 < R.items.length ? 'Next item' : 'See the summary', a: 'adv' }]);
         } else btns([{ t: 'Next item', a: 'adv' }]);
@@ -456,7 +478,7 @@
         d.cols.map(c => '<th>' + c + '</th>').join('') + '</tr></thead><tbody>';
       if (!visible.length) {
         h += '<tr><td class="lab" style="color:var(--faint)" colspan="' + (d.cols.length + 1) +
-          '">Your table is empty — pick the first row from the bank below.</td></tr>';
+          '">Your table is empty, pick the first row from the bank below.</td></tr>';
       }
       for (const row of visible) {
         const ri = d.rows.indexOf(row);
@@ -471,7 +493,7 @@
           if (R.mode === 'exam' && R.done) {
             /* Hand the paper in and it stays handed in: your own figures,
                no marking, no answers. Review comes after the whole paper. */
-            h += '<td class="num ghost">' + V.esc(R.vals[bi] || '—') + '</td>';
+            h += '<td class="num ghost">' + V.esc(R.vals[bi] || ', ') + '</td>';
             continue;
           }
           if (R.mode === 'exam') {
@@ -494,7 +516,7 @@
       let b = '<div class="tbuild">' + KIND.table.grid() + '</div>';
 
       if (R.phase === 'skeleton') {
-        b += '<div class="qnote"><b>Step 1 — draw the skeleton.</b> ' + d.skeleton.prompt + '</div>';
+        b += '<div class="qnote"><b>Step 1: draw the skeleton.</b> ' + d.skeleton.prompt + '</div>';
         b += '<div class="bank">' + R.bank.map((t, i) =>
           '<button' + (R.picked.includes(t) ? ' disabled' : '') +
           ' onclick="VBM.Drill.act(\'lab\',' + i + ')">' + t + '</button>').join('') + '</div>';
@@ -506,7 +528,7 @@
 
       if (!R.done && R.mode === 'practice' && R.at < R.blanks.length) {
         const bl = R.blanks[R.at], row = d.rows[bl.ri];
-        b += '<div class="qnote"><b>Step 2 — fill it in.</b> Now: <b>' + row.label + '</b>' +
+        b += '<div class="qnote"><b>Step 2: fill it in.</b> Now: <b>' + row.label + '</b>' +
           (d.cols.length > 1 ? ' &middot; column <b>' + d.cols[bl.ci] + '</b>' : '') + '</div>';
         b += '<div class="inrow"><input id="nin" inputmode="decimal" placeholder="value for this cell" ' +
           'onkeydown="if(event.key===\'Enter\')VBM.Drill.act(\'check\')"></div>';
@@ -530,7 +552,7 @@
           const right = R.res.filter(x => x === 'ok').length;
           finish(right / R.blanks.length,
             coach(right === R.blanks.length ? 'ok' : 'hint',
-              'Table complete — ' + right + ' of ' + R.blanks.length + ' cells found unaided',
+              'Table complete, ' + right + ' of ' + R.blanks.length + ' cells found unaided',
               '<p>Practise redrawing this shape on paper from memory. On the real paper the structure ' +
               'itself earns marks before a single number is written.</p>'));
           KIND.table.paint(); paintDone(); return;
@@ -556,7 +578,7 @@
         } else {
           R.wrongEver = true;
           const w = (d.skeleton.why || {})[t];
-          setCoach(coach('bad', 'Not that row — not here',
+          setCoach(coach('bad', 'Not that row, not here',
             '<p>' + (w || 'That row does not come next. Ask yourself what the previous line logically leads to.') + '</p>'));
           KIND.table.paint();
         }
@@ -617,7 +639,7 @@
         R.att++; R.wrongEver = true;
         const dg = (cell.diag || []).find(x => V.hits(raw, x.v, x.tol || cell.tol));
         setCoach(coach('bad', dg ? 'I can see what happened' : 'Not that number',
-          '<p>' + (dg ? dg.m : 'Not right. Write the formula for this line before substituting — that is where the marks are anyway.') + '</p>'));
+          '<p>' + (dg ? dg.m : 'Not right. Write the formula for this line before substituting. That is where the marks are anyway.') + '</p>'));
         KIND.table.paint(); return;
       }
     }
@@ -674,7 +696,7 @@
           KIND.verbal.paint(); paintDone(); return;
         }
         R.att++; R.wrongEver = true;
-        setCoach(coach('bad', hits + ' of ' + g.length + ' key elements — keep going',
+        setCoach(coach('bad', hits + ' of ' + g.length + ' key elements. Keep going',
           kw + '<p style="margin-top:10px">Add the missing elements above and check again. ' +
           'Each one is a phrase the official key awards marks for.</p>'));
         KIND.verbal.paint(); return;
@@ -705,6 +727,7 @@
       if (!R) return;
       if (a === 'next') { if (R.onNext) R.onNext(R.score); return; }
       if (a === 'again') { V.Drill.start(R.drill.id, { mode: R.mode, label: R.label, last: R.last, onNext: R.onNext }); return; }
+      if (a === 'intu') { R.showIntu = !R.showIntu; KIND[R.drill.kind].paint(); return; }
       KIND[R.drill.kind].act(a, arg, arg2);
       if (R.done && R.onDone) { R.onDone(R.score); R.onDone = null; }
     },

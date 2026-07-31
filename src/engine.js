@@ -1,5 +1,5 @@
 /* ==========================================================================
-   engine.js — state, progress, scoring, and the small helpers everything uses.
+   engine.js, state, progress, scoring, and the small helpers everything uses.
    ========================================================================== */
 'use strict';
 
@@ -23,7 +23,7 @@ window.VBM = {
 
   V.S = S;
   V.save = function () { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
-  /* Wiping progress keeps the acknowledgement and the exam date — they are
+  /* Wiping progress keeps the acknowledgement and the exam date. They are
      settings, not score. */
   V.reset = function () {
     const keep = { ack: S.ack, examDate: S.examDate };
@@ -101,12 +101,12 @@ window.VBM = {
   /* ---------------- number parsing & formatting ---------------- */
 
   /* Accepts 6360 · 6,360 · 6.360 (German grouping) · 6 360 · -13140 · −13.140,50 ·
-     (1,200) · 12.25% · 1.7926 — and returns a Number, or NaN. */
+     (1,200) · 12.25% · 1.7926, and returns a Number, or NaN. */
   V.parseNum = function (raw) {
     if (raw == null) return NaN;
     let s = String(raw).trim();
     if (!s) return NaN;
-    s = s.replace(/[−–—]/g, '-').replace(/\s|'|_/g, '');
+    s = s.replace(/[\u2212\u2013\u2014]/g, '-').replace(/\s|'|_/g, '');
     let neg = false;
     if (/^\(.*\)$/.test(s)) { neg = true; s = s.slice(1, -1); }
     s = s.replace(/%$/, '').replace(/^EUR|^€|EUR$|€$/gi, '');
@@ -123,7 +123,7 @@ window.VBM = {
       s = /^\d{1,3}(,\d{3})+$/.test(s) ? s.replace(/,/g, '') : s.replace(',', '.');
     } else if (hasDot) {
       // Two or more dot-groups can only be German grouping: 1.234.567
-      // A single group (28.389) is genuinely ambiguous — treat it as a decimal
+      // A single group (28.389) is genuinely ambiguous. Treat it as a decimal
       // here, and let V.nums() offer the grouped reading as an alternative.
       if (/^\d{1,3}(\.\d{3}){2,}$/.test(s)) s = s.replace(/\./g, '');
     }
@@ -136,11 +136,11 @@ window.VBM = {
   /* Every plausible reading of what the learner typed. "6.360" could be 6.36
      (English decimal) or 6,360 (German grouping); "1,234" could be 1234 or
      1.234. We accept whichever one matches, so keyboard habits never cost a
-     mark — but a genuinely wrong number still fails both readings. */
+     mark, but a genuinely wrong number still fails both readings. */
   V.nums = function (raw) {
     const primary = V.parseNum(raw);
     const out = isFinite(primary) ? [primary] : [];
-    const s = String(raw == null ? '' : raw).trim().replace(/[−–—]/g, '-').replace(/\s|'|_/g, '');
+    const s = String(raw == null ? '' : raw).trim().replace(/[\u2212\u2013\u2014]/g, '-').replace(/\s|'|_/g, '');
     const grouped = /^[-+]?\d{1,3}\.\d{3}$/.test(s);   // 6.360  → also 6360
     const decimal = /^[-+]?\d{1,3},\d{3}$/.test(s);    // 1,234  → also 1.234
     if (grouped && isFinite(primary)) out.push(primary * 1000);
@@ -168,7 +168,7 @@ window.VBM = {
   };
 
   /* ---------------- text helpers ---------------- */
-  /* Escapes quotes too — learner input is interpolated into value="…". */
+  /* Escapes quotes too, learner input is interpolated into value="…". */
   V.esc = function (s) {
     return String(s == null ? '' : s)
       .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -177,7 +177,7 @@ window.VBM = {
   /* For prose: strip punctuation so keyword matching is forgiving. */
   V.norm = function (s) {
     return String(s).toLowerCase()
-      .replace(/[−–—]/g, '-')
+      .replace(/[\u2212\u2013\u2014]/g, '-')
       .replace(/[^a-z0-9%+\-*/=(). ]/g, ' ')
       .replace(/\s+/g, ' ').trim();
   };
@@ -186,7 +186,7 @@ window.VBM = {
      and > must not compare equal to <, or the formula drills would accept a
      wrong formula. Only case and whitespace are ignored. */
   V.tnorm = function (s) {
-    return String(s).toLowerCase().replace(/[−–—]/g, '-').replace(/\s+/g, '');
+    return String(s).toLowerCase().replace(/[\u2212\u2013\u2014]/g, '-').replace(/\s+/g, '');
   };
   V.shuffle = function (a) {
     a = a.slice();

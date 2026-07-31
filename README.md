@@ -1,9 +1,9 @@
-# The Value Desk — a VBM exam trainer
+# The Value Desk, a VBM exam trainer
 
 A guided, self-marking drill game for a university **Value-based Management** course. You draw the
 tables, write the formulas, and get told *which mistake you made* rather than just "wrong".
 
-**Live:** deploy to Vercel (see below) — it is a static site, no build step.
+**Live:** deploy to Vercel (see below). It is a static site, no build step.
 
 ---
 
@@ -21,8 +21,8 @@ this tool disagrees with them, they are right and it is wrong.
 
 Drills are labelled with their provenance:
 
-- `· official solution` — every number checked against a published answer key.
-- `· derived` — the key was not available, so the figures were computed by applying the method that
+- `· official solution`. Every number checked against a published answer key.
+- `· derived`: the key was not available, so the figures were computed by applying the method that
   the official keys elsewhere fix. Flagged in the drill text.
 
 No exam date is hardcoded. You set your own on the desk; the countdown and the study plan date
@@ -47,32 +47,32 @@ themselves from it.
 | 09 | EVA / MVA / DCF & Free Cash Flow | the three identities and how they get mutilated |
 | 10 | Trap Radar | eleven mistakes taken from the examiner's own list |
 
-**Three papers under the clock** — a test-exam template, a full 120-point real paper, and a
+**Three papers under the clock**, a test-exam template, a full 120-point real paper, and a
 structural prediction assembled from the archetypes.
 
-**Two reference screens** — a Pattern Board mapping every past paper topic by topic, and the Vault
+**Two reference screens**, a Pattern Board mapping every past paper topic by topic, and the Vault
 holding every formula that has to be memorised (no formula sheet is permitted in the exam).
 
 ## How the teaching works
 
 Seven drill types, each chosen to rehearse a specific exam action:
 
-- **draw the table** — pick the row labels in order from a bank of correct rows and plausible wrong
+- **draw the table**, pick the row labels in order from a bank of correct rows and plausible wrong
   ones, *then* fill the cells. Because tables must be drawn by hand and the structure itself earns
   marks.
-- **write the formula** — assemble it from tokens with distractors mixed in. `×` and `÷`, `>` and
+- **write the formula**, assemble it from tokens with distractors mixed in. `×` and `÷`, `>` and
   `<` are compared strictly, so a swapped operator is never accepted.
-- **calculate** — a single number, with generous rounding tolerance (the official keys accept both
+- **calculate**, a single number, with generous rounding tolerance (the official keys accept both
   rounded and unrounded intermediate results).
-- **write the answer** — free text scored against the phrases the official keys award marks for,
+- **write the answer**, free text scored against the phrases the official keys award marks for,
   showing you which are present and which are missing.
-- **sort them** / **order the steps** / **multiple choice** — for taxonomies, procedures and the
+- **sort them** / **order the steps** / **multiple choice**, for taxonomies, procedures and the
   recycled MC bank.
 
 Three things make it a tutor rather than a quiz:
 
 1. **Misconception diagnosis.** Wrong numeric answers are matched against known wrong answers. Enter
-   `7,560` for NOPAT and it says *"that is 10,000 + 600 − 3,040 — you left out the tax shield"*.
+   `7,560` for NOPAT and it says *"that is 10,000 + 600 − 3,040. You left out the tax shield"*.
 2. **Escalating hints, gated answers.** Hints go from nudge to near-answer. "Show the answer" stays
    disabled until you have genuinely tried; revealed drills go into a review queue.
 3. **An explanation on every drill** that argues *why* the formula is shaped the way it is, not just
@@ -98,7 +98,7 @@ No build step, no dependencies, no framework.
 vercel --prod
 ```
 
-Or point Vercel at the GitHub repo and accept the defaults — framework preset **Other**, build
+Or point Vercel at the GitHub repo and accept the defaults, framework preset **Other**, build
 command empty, output directory the repository root.
 
 ## Layout

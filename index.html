@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>The Value Desk — VBM Exam Trainer</title>
+<title>The Value Desk: VBM Exam Trainer</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="An unofficial, student-built training game for Value-based Management. Drill the EVA ladder, R&amp;D capitalisation, RBCAR, bonus banks and WACC — tables drawn by hand, formulas written from memory. Not affiliated with TUM.">
+<meta name="description" content="An unofficial, student-built training game for Value-based Management. Drill the EVA ladder, R&amp;D capitalisation, RBCAR, bonus banks and WACC, tables drawn by hand, formulas written from memory. Not affiliated with TUM.">
 <meta name="theme-color" content="#0d1b26">
 <link rel="stylesheet" href="assets/app.css">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230d1b26'/%3E%3Ctext x='16' y='23' font-size='19' font-family='monospace' font-weight='bold' text-anchor='middle' fill='%232fb3a3'%3E%CE%94%3C/text%3E%3C/svg%3E">
@@ -18,7 +18,7 @@
     </button>
     <div class="spacer"></div>
     <div class="stat" id="rankwrap"><span class="rankchip" id="rankchip">Trainee</span></div>
-    <div class="stat" title="Value created — your score">
+    <div class="stat" title="Value created. Your score">
       <svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 12.5 L6 6.5 L9.5 9 L14 3" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       <b id="xpval">0</b><span class="unit">EVA</span>
     </div>
@@ -35,7 +35,7 @@
   <main id="screen" tabindex="-1"></main>
 
   <footer class="credits">
-    <span class="who"><b>Unofficial student project</b> — not affiliated with or endorsed by TUM. May contain errors;
+    <span class="who"><b>Unofficial student project</b>, not affiliated with or endorsed by TUM. May contain errors;
       your lecture slides, exercises and official solutions are the source of truth.
       Built by <b>Devansh Devrani</b>.</span>
     <a class="clink" href="https://www.linkedin.com/in/devansh-devrani/" target="_blank" rel="noopener">LinkedIn</a>
@@ -46,6 +46,7 @@
 
 <script src="src/engine.js"></script>
 <script src="src/data/formulas.js"></script>
+<script src="src/data/intuition.js"></script>
 <script src="src/data/pattern.js"></script>
 <script src="src/data/drills-eva.js"></script>
 <script src="src/data/drills-adjust.js"></script>
@@ -61,5 +62,12 @@
 <script src="src/data/exams.js"></script>
 <script src="src/drillui.js"></script>
 <script src="src/app.js"></script>
+
+<!-- Vercel Web Analytics. This path is served by Vercel itself in production,
+     so there is no package to install and nothing to bundle; it simply 404s
+     when you run the site locally. Turn Web Analytics on for the project in
+     the Vercel dashboard and pageviews start arriving. -->
+<script defer src="/_vercel/insights/script.js"></script>
+<script defer src="/_vercel/speed-insights/script.js"></script>
 </body>
 </html>
