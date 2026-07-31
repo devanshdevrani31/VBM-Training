@@ -168,8 +168,11 @@ window.VBM = {
   };
 
   /* ---------------- text helpers ---------------- */
+  /* Escapes quotes too — learner input is interpolated into value="…". */
   V.esc = function (s) {
-    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   };
   /* For prose: strip punctuation so keyword matching is forgiving. */
   V.norm = function (s) {

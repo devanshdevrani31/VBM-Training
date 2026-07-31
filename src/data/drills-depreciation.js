@@ -79,7 +79,7 @@
       source: 'SS19 Q4.2 · official solution',
       q: 'Calculate the ROI of the project in 2019 under <em>straight-line</em> depreciation. Give your answer as a percentage. (part of 6 points)',
       data: [S19Q4],
-      unit: '% (enter e.g. -29.91)',
+      unit: 'per cent (e.g. enter 12.5 for 12.5 %)',
       a: -29.9111, tol: 0.2,
       f: 'Straight-line depreciation = 900,000 / 3 = 300,000\nROI(2019) = (30,800 − 300,000) / 900,000 = −269,200 / 900,000 = −29.9111 %',
       hints: [

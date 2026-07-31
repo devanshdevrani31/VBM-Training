@@ -86,8 +86,8 @@
     h += countdown(dl);
 
     h += '<h1>The Value Desk</h1>';
-    h += '<p class="sub">A training floor for TUM Value-based Management. Every number here is ' +
-      'transcribed from a past paper and checked against the official answer key. Work the modules ' +
+    h += '<p class="sub">An unofficial training floor for the Value-based Management course. Every figure is ' +
+      'transcribed from a past paper and, where a key was published, checked against it. Work the modules ' +
       'top-down — they are ordered by points per hour of study, not by lecture order.</p>';
 
     const nr = V.nextRank();

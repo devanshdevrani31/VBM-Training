@@ -118,7 +118,8 @@
 
   function paintDone() {
     const d = R.drill;
-    let h = R.extra || '';
+    /* Under exam conditions nothing is fed back until the paper is handed in. */
+    let h = R.mode === 'practice' ? (R.extra || '') : '';
     if (R.mode === 'practice') {
       const [cls, head, msg] = DONE_MSG[R.outcome] || DONE_MSG.guided;
       h += coach(cls, head, '<p>' + msg + '</p>' +
@@ -143,16 +144,17 @@
     paint() {
       const d = R.drill;
       let b = '<div class="opts">';
+      /* Exam mode marks your choice but never says whether it was right. */
+      const marked = R.mode === 'practice' && (R.done || R.pick != null);
       R.order.forEach((oi, n) => {
         const o = d.opts[oi];
         let cls = '';
-        if (R.done || (R.mode === 'practice' && R.pick != null)) {
-          if (o.ok) cls = 'right'; else if (R.pick === oi) cls = 'wrong';
-        }
+        if (marked) { if (o.ok) cls = 'right'; else if (R.pick === oi) cls = 'wrong'; }
+        else if (R.pick === oi) cls = 'sel';
         b += '<button class="opt ' + cls + '"' + (R.done ? ' disabled' : '') +
           ' onclick="VBM.Drill.act(\'pick\',' + oi + ')"><span class="key">' +
           String.fromCharCode(65 + n) + '</span><span>' + o.t +
-          ((R.done || (R.mode === 'practice' && R.pick != null)) && o.y ? '<span class="oy">' + o.y + '</span>' : '') +
+          (marked && o.y ? '<span class="oy">' + o.y + '</span>' : '') +
           '</span></button>';
       });
       document.getElementById('drillhost').innerHTML = shell(b + '</div>');
@@ -190,7 +192,8 @@
     },
     paint() {
       const d = R.drill;
-      let b = '<div class="fline' + (R.done ? (R.score >= 1 ? ' good' : ' bad') : '') + '" id="fline">';
+      const mark = R.done && R.mode === 'practice';
+      let b = '<div class="fline' + (mark ? (R.score >= 1 ? ' good' : ' bad') : '') + '" id="fline">';
       if (!R.seq.length) b += '<span class="ph">Click tokens below to build the formula…</span>';
       else b += R.seq.map((t, i) =>
         '<span class="tok' + (/^[=+\-−×÷/()><]|^·$/.test(t) ? ' op' : '') + '"' +
@@ -257,8 +260,9 @@
     paint() {
       const d = R.drill;
       let b = '<div class="seq">';
+      const mark = R.done && R.mode === 'practice';
       R.seq.forEach((s, n) => {
-        const cls = R.done ? (s.i === n ? 'good' : 'shown') : 'good';
+        const cls = mark ? (s.i === n ? 'good' : 'shown') : (R.done ? '' : 'good');
         b += '<div class="item ' + cls + '"><span class="n">' + (n + 1) + '</span><span>' + s.t + '</span></div>';
       });
       if (!R.done && R.seq.length < d.items.length) {
@@ -324,14 +328,15 @@
       b += '<div class="bkt">';
       d.buckets.forEach((bk, bi) => {
         let cls = '';
-        if (R.picked != null) {
+        if (R.picked != null && R.mode === 'practice') {
           if (bi === cur.b) cls = 'good'; else if (bi === R.picked) cls = 'bad';
         }
         b += '<button class="' + cls + '"' + (R.picked != null ? ' disabled' : '') +
           ' onclick="VBM.Drill.act(\'pick\',' + bi + ')">' + bk + '</button>';
       });
       b += '</div>';
-      document.getElementById('drillhost').innerHTML = shell(b, { prog: progress(R.items.length, R.at, R.res) });
+      document.getElementById('drillhost').innerHTML = shell(b,
+        { prog: progress(R.items.length, R.at, R.mode === 'practice' ? R.res : null) });
       if (R.picked != null) {
         const ok = R.picked === cur.b;
         if (R.mode === 'practice') {
@@ -375,8 +380,10 @@
     init() { R.att = 0; R.hn = 0; },
     paint() {
       const d = R.drill;
+      /* When done, practice shows the correct value in the box; exam mode
+         shows back what you actually wrote, and says nothing about it. */
       let b = '<div class="inrow"><input id="nin" inputmode="decimal" placeholder="your answer"' +
-        (R.done ? ' disabled value="' + V.fmt(d.a) + '"' : '') +
+        (R.done ? ' disabled value="' + V.esc(R.mode === 'practice' ? V.fmt(d.a) : (R.raw || '')) + '"' : '') +
         ' onkeydown="if(event.key===\'Enter\')VBM.Drill.act(\'' + (R.mode === 'exam' ? 'submit' : 'check') + '\')">' +
         (d.unit ? '<span class="suffix">' + d.unit + '</span>' : '') + '</div>';
       document.getElementById('drillhost').innerHTML = shell(b);
@@ -399,6 +406,7 @@
       }
       const el = document.getElementById('nin');
       const raw = el ? el.value : '';
+      R.raw = raw;
       if (a === 'submit') {
         const ok = V.hits(raw, d.a, d.tol) || (d.diag || []).some(x => x.ok && V.hits(raw, x.v, x.tol || d.tol));
         finish(ok ? 1 : 0, KIND.numeric.work(ok ? 'Correct' : 'The answer is ' + V.fmt(d.a), ok ? 'ok' : 'bad'));
@@ -460,11 +468,16 @@
           const bi = R.blanks.findIndex(b => b.ri === ri && b.ci === ci);
           const st = R.res[bi];
           if (R.phase === 'skeleton') { h += '<td class="num todo">?</td>'; continue; }
-          if (R.mode === 'exam' && !R.done) {
-            h += '<td class="num"><input style="width:100%;min-width:80px;border:1px solid var(--line);' +
-              'background:var(--panel2);color:var(--ink);border-radius:4px;padding:3px 6px;text-align:right;' +
-              'font-family:inherit;font-size:13px" inputmode="decimal" value="' + (R.vals[bi] || '') +
-              '" oninput="VBM.Drill.act(\'set\',' + bi + ',this.value)"></td>';
+          if (R.mode === 'exam' && R.done) {
+            /* Hand the paper in and it stays handed in: your own figures,
+               no marking, no answers. Review comes after the whole paper. */
+            h += '<td class="num ghost">' + V.esc(R.vals[bi] || '—') + '</td>';
+            continue;
+          }
+          if (R.mode === 'exam') {
+            h += '<td class="num"><input class="cellin" inputmode="decimal" value="' +
+              V.esc(R.vals[bi] || '') + '" aria-label="value" ' +
+              'oninput="VBM.Drill.act(\'set\',' + bi + ',this.value)"></td>';
             continue;
           }
           if (st === 'ok') h += '<td class="num good">' + V.fmt(c.a) + '</td>';
@@ -499,7 +512,7 @@
           'onkeydown="if(event.key===\'Enter\')VBM.Drill.act(\'check\')"></div>';
       }
       document.getElementById('drillhost').innerHTML = shell(b,
-        { prog: progress(R.blanks.length, R.at, R.res) });
+        { prog: progress(R.blanks.length, R.at, R.mode === 'practice' ? R.res : null) });
 
       if (R.done) return;
       if (R.mode === 'exam') { btns([{ t: R.last ? 'Submit paper' : 'Submit & continue', a: 'submit' }]); return; }
