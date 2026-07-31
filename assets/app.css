@@ -89,6 +89,70 @@ h2{font-size:19px;font-weight:800;margin:26px 0 8px}
 .banner .lbl{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint)}
 .banner .txt{font-size:13.5px;color:var(--muted);flex:1;min-width:200px}
 
+/* ---------------- top bar (back link on every screen) ---------------- */
+.topbar{
+  display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:18px 0 2px;
+  font-size:10.5px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--faint);
+}
+.hint-lite{
+  font-size:11px;font-weight:600;letter-spacing:.02em;text-transform:none;color:var(--faint);
+}
+
+/* ---------------- the one big call to action ---------------- */
+.hero{margin:6px 0 4px}
+button.hero-go{
+  display:flex;gap:16px;align-items:center;width:100%;text-align:left;cursor:pointer;
+  background:var(--accent);border:none;border-radius:11px;padding:17px 20px;
+  color:#fff;font:inherit;box-shadow:var(--shadow);transition:filter .14s,transform .14s;
+}
+button.hero-go:hover,button.hero-go:focus-visible{filter:brightness(1.07);transform:translateY(-1px);outline:none}
+.hero-go .play{
+  font-size:15px;flex-shrink:0;width:38px;height:38px;border-radius:50%;
+  background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;
+}
+.hero-go .hg{display:block;flex:1;min-width:0}
+.hero-go .hl{
+  display:block;font-size:10.5px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;
+  opacity:.85;
+}
+.hero-go .hd{display:block;font-size:17px;font-weight:800;margin-top:3px;line-height:1.3}
+.hero-go .hm{display:block;font-size:12.5px;opacity:.85;margin-top:3px}
+
+/* ---------------- how this works ---------------- */
+.howto{
+  background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--warn);
+  border-radius:9px;padding:15px 18px;margin:14px 0 4px;box-shadow:var(--shadow);
+}
+.howto .ch{
+  font-size:10.5px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--warn);margin-bottom:9px;
+}
+.howto ol{margin:0;padding-left:20px}
+.howto li{font-size:13.5px;line-height:1.6;margin-bottom:8px;color:var(--muted)}
+.howto li b{color:var(--ink)}
+.howto .btnrow{margin-top:6px}
+
+/* ---------------- quick-practice tiles ---------------- */
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:10px}
+button.tile{
+  display:block;text-align:left;cursor:pointer;background:var(--panel);
+  border:1px solid var(--line);border-radius:9px;padding:14px 15px;
+  color:var(--ink);font:inherit;box-shadow:var(--shadow);
+  transition:border-color .14s,transform .14s;
+}
+button.tile:hover,button.tile:focus-visible{border-color:var(--accent);transform:translateY(-1px);outline:none}
+.tile .tn{
+  display:flex;align-items:center;justify-content:center;width:26px;height:26px;
+  border-radius:7px;background:var(--accent-soft);color:var(--accent);
+  font-size:13px;font-weight:800;margin-bottom:9px;
+}
+.tile .tt{display:block;font-weight:800;font-size:14.5px}
+.tile .td{display:block;font-size:12.5px;color:var(--muted);margin-top:4px;line-height:1.45}
+.tile .tc{
+  display:block;font-family:ui-monospace,Consolas,monospace;font-size:11px;
+  color:var(--faint);margin-top:9px;
+}
+
 /* ---------------- cards / rows ---------------- */
 .card{
   background:var(--panel);border:1px solid var(--line);border-radius:10px;
@@ -453,6 +517,10 @@ kbd{
   #rail{gap:8px}
   .banner{padding:11px 13px;gap:11px}
   .banner .big{font-size:22px}
+  button.hero-go{padding:14px 15px;gap:12px}
+  .hero-go .play{width:32px;height:32px;font-size:13px}
+  .hero-go .hd{font-size:15.5px}
+  .tiles{grid-template-columns:1fr}
 }
 @media (max-width:420px){ #rail .rail-sep{display:none} }
 @media (prefers-reduced-motion:reduce){

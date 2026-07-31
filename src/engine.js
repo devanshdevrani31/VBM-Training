@@ -86,6 +86,23 @@ window.VBM = {
     return done / ids.length;
   };
 
+  /* every drill of one kind, in module order */
+  V.byKind = function (kind) {
+    const out = [];
+    for (const ch of V.data.chapters) {
+      for (const id of ch.drills) {
+        const d = V.data.drills[id];
+        if (d && d.kind === kind) out.push(id);
+      }
+    }
+    return out;
+  };
+
+  /* how many of a kind have been cleared at least once */
+  V.clearedOf = function (ids) {
+    return ids.filter(id => S.items[id] && S.items[id].ok > 0).length;
+  };
+
   /* drills the learner got wrong or revealed and has never since cleared */
   V.weakItems = function () {
     const out = [];

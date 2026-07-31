@@ -72,10 +72,68 @@
 
   function meter(frac) {
     const n = 8, on = Math.round(frac * n);
-    let h = '<div class="meter">';
+    let h = '<div class="meter" title="How much of this module you have cleared">';
     for (let i = 0; i < n; i++) h += '<i class="' + (i < on ? 'on' : '') + '"></i>';
     return h + '<span class="pct">' + Math.round(frac * 100) + '%</span></div>';
   }
+
+  /* A back link at the top of every screen, because burying it at the bottom
+     of a long page is how people get lost. */
+  function topbar(label) {
+    return '<div class="topbar">' +
+      '<button class="btn ghost sm" onclick="VBM.go(\'home\')">← The desk</button>' +
+      (label ? '<span>' + label + '</span>' : '') + '</div>';
+  }
+
+  /* Cross-course practice sets: one question type, every module at once. */
+  const QUICK = [
+    {
+      id: 'mc', kind: 'mc', icon: '◉', title: 'Multiple choice',
+      blurb: 'Every MC item in the course, shuffled. This is the whole 20-point Part I plus the trap bank.'
+    },
+    {
+      id: 'formula', kind: 'formula', icon: 'ƒ', title: 'Formulas',
+      blurb: 'Build each one from tokens, with the intuition behind it one click away.'
+    },
+    {
+      id: 'table', kind: 'table', icon: '▦', title: 'Tables',
+      blurb: 'Draw the skeleton, then fill it. The part of the exam you do by hand.'
+    },
+    {
+      id: 'verbal', kind: 'verbal', icon: '¶', title: 'Written answers',
+      blurb: 'The verbal marks, scored against the phrases the official keys reward.'
+    },
+    {
+      id: 'numeric', kind: 'numeric', icon: '=', title: 'Calculations',
+      blurb: 'Single-number answers, with your specific mistake named when you miss.'
+    },
+    {
+      id: 'sequence', kind: 'sequence', icon: '↓', title: 'Procedures',
+      blurb: 'Put the steps in order: the lease adjustment, the FCF bridge, the EBIT walk-up.'
+    },
+    {
+      id: 'classify', kind: 'classify', icon: '⇄', title: 'Sorting',
+      blurb: 'NIBL or not, weak or strong, systematic or not. The taxonomies MC items live on.'
+    }
+  ];
+  V.QUICK = QUICK;
+
+  V.hideHowto = function () { V.S.howtoHidden = true; V.save(); home(); };
+
+  /* The next drill worth doing: first uncleared one, in module order. */
+  V.resumePoint = function () {
+    let started = false;
+    for (const ch of V.data.chapters) {
+      for (let i = 0; i < ch.drills.length; i++) {
+        const id = ch.drills[i], it = V.S.items[id];
+        if (it) started = true;
+        if (!it || it.ok === 0) {
+          return { ch, index: i, drill: V.data.drills[id], started };
+        }
+      }
+    }
+    return null;
+  };
 
   /* ============================================================ HOME */
   function home() {
@@ -86,33 +144,81 @@
     h += countdown(dl);
 
     h += '<h1>The Value Desk</h1>';
-    h += '<p class="sub">An unofficial trainer for Value-based Management. You draw the tables, you write the ' +
-      'formulas from memory, and when you get something wrong it tells you <i>which</i> mistake you made. ' +
-      'Work the modules top to bottom: they are sorted by how many marks they are worth per hour of study, ' +
-      'not by lecture order.</p>';
+    h += '<p class="sub">An unofficial trainer for Value-based Management. You draw the tables and write the ' +
+      'formulas yourself, and when you slip it tells you <i>which</i> mistake you made.</p>';
+
+    /* ---- one obvious thing to click ---- */
+    const nx = V.resumePoint();
+    h += '<div class="hero">';
+    if (nx) {
+      h += '<button class="hero-go" onclick="VBM.runList(\'' + nx.ch.id + '\',' + nx.index + ')">' +
+        '<span class="play">▶</span><span class="hg">' +
+        '<span class="hl">' + (nx.started ? 'Pick up where you left off' : 'Start training') + '</span>' +
+        '<span class="hd">' + nx.drill.title + '</span>' +
+        '<span class="hm">Module ' + nx.ch.n + ' · ' + nx.ch.title + ' · drill ' + (nx.index + 1) +
+        ' of ' + nx.ch.drills.length + '</span></span></button>';
+    } else {
+      h += '<button class="hero-go" onclick="VBM.go(\'exambrief\',\'x-ss19\')">' +
+        '<span class="play">▶</span><span class="hg"><span class="hl">Every drill is cleared</span>' +
+        '<span class="hd">Sit a full paper under the clock</span>' +
+        '<span class="hm">The exam room is where it counts now</span></span></button>';
+    }
+    h += '</div>';
+
+    /* ---- what this thing actually is, for a first-timer ---- */
+    if (!V.S.howtoHidden) {
+      h += '<div class="howto"><div class="ch">How this works</div>' +
+        '<ol><li><b>Work the modules top to bottom.</b> They are sorted by marks per hour of study, ' +
+        'not by lecture order, so the top one is genuinely where to start.</li>' +
+        '<li><b>Every drill makes you produce something</b>: a table drawn row by row, a formula built ' +
+        'from scratch, a number, a written sentence. Get it wrong and it names <i>your</i> mistake. ' +
+        'Hints escalate, and the answer only unlocks once you have actually tried.</li>' +
+        '<li><b>When a topic feels solid, sit a paper</b> in the exam room. No hints, clock running, ' +
+        'full breakdown at the end.</li></ol>' +
+        '<div class="btnrow"><button class="btn ghost sm" onclick="VBM.hideHowto()">Got it, hide this</button></div>' +
+        '</div>';
+    }
 
     const nr = V.nextRank();
-    h += '<div class="qnote" style="margin-bottom:18px">Rank <b>' + V.rank() + '</b> · ' +
-      V.S.xp + ' EVA' + (nr ? ', ' + (nr.at - V.S.xp) + ' more to reach <b>' + nr.name + '</b>' : ', top rank') +
+    h += '<div class="qnote" style="margin:14px 0 0">Rank <b>' + V.rank() + '</b> · ' + V.S.xp + ' EVA' +
+      (nr ? ', ' + (nr.at - V.S.xp) + ' more to reach <b>' + nr.name + '</b>' : ', top rank') +
       (V.S.best > 1 ? ' · best streak ' + V.S.best : '') + '</div>';
+
+    /* ---- practise one type across the whole course ---- */
+    h += '<div class="eyebrow">Quick practice <span class="hint-lite">one type of question, every module at once</span></div>';
+    h += '<div class="tiles">';
+    for (const s of QUICK) {
+      const ids = V.byKind(s.kind);
+      if (!ids.length) continue;
+      const done = V.clearedOf(ids);
+      h += '<button class="tile" onclick="VBM.runList(\'' + s.id + '\')">' +
+        '<span class="tn">' + s.icon + '</span>' +
+        '<span class="tt">' + s.title + '</span>' +
+        '<span class="td">' + s.blurb + '</span>' +
+        '<span class="tc">' + done + ' / ' + ids.length + ' cleared</span></button>';
+    }
+    h += '</div>';
 
     if (weak.length) {
       h += '<div class="eyebrow">Review queue</div>';
       h += '<div class="rows"><button class="row" onclick="VBM.runList(\'review\')">' +
-        '<span class="idx">↻</span><span class="body"><span class="t">' + weak.length +
-        ' drill' + (weak.length === 1 ? '' : 's') + ' to redo</span>' +
-        '<span class="d">Things you got wrong or revealed and have not yet cleared. Clear these first. They are your cheapest marks.</span>' +
+        '<span class="idx">↻</span><span class="body"><span class="t">Redo ' + weak.length +
+        ' drill' + (weak.length === 1 ? '' : 's') + '</span>' +
+        '<span class="d">Things you got wrong or revealed and have not cleared since. Cheapest marks you will find.</span>' +
         '</span></button></div>';
     }
 
-    h += '<div class="eyebrow">Training modules</div><div class="rows">';
+    h += '<div class="eyebrow">Training modules <span class="hint-lite">in the order worth doing them</span></div>';
+    h += '<div class="rows">';
     for (const ch of V.data.chapters) {
       const m = V.mastery(ch);
       h += '<button class="row" onclick="VBM.go(\'chapter\',\'' + ch.id + '\')">';
       h += '<span class="idx">' + ch.n + '</span>';
       h += '<span class="body"><span class="t">' + ch.title + '</span><span class="d">' + ch.blurb + '</span></span>';
-      h += '<span class="rt"><span class="badge t' + ch.tier + '">' + TIERNAME[ch.tier] + '</span>' +
-        '<span class="hit">' + ch.hit + '</span>' + meter(m) + '</span>';
+      h += '<span class="rt"><span class="badge t' + ch.tier + '" title="How urgent this module is">' +
+        TIERNAME[ch.tier] + '</span>' +
+        '<span class="hit" title="How often this topic appeared on past papers">' + ch.hit + ' papers</span>' +
+        meter(m) + '</span>';
       h += '</button>';
     }
     h += '</div>';
@@ -152,13 +258,16 @@
   function chapter(id) {
     const ch = V.data.chapters.find(c => c.id === id);
     if (!ch) return home();
-    let h = '<div class="eyebrow">Module ' + ch.n + ' · ' + TIERNAME[ch.tier] + ' · appears on ' + ch.hit + '</div>';
+    const cleared = V.clearedOf(ch.drills);
+    let h = topbar('Module ' + ch.n + ' · ' + TIERNAME[ch.tier] + ' · appeared on ' + ch.hit + ' papers');
     h += '<h1>' + ch.title + '</h1><p class="sub">' + ch.blurb + '</p>';
-    h += '<div class="btnrow" style="margin:0 0 18px">' +
-      '<button class="btn" onclick="VBM.runList(\'' + ch.id + '\')">Run the whole module</button>' +
-      '<button class="btn ghost" onclick="VBM.go(\'home\')">Back to the desk</button></div>';
+    h += '<div class="btnrow" style="margin:0 0 6px">' +
+      '<button class="btn" onclick="VBM.runList(\'' + ch.id + '\')">' +
+      (cleared ? 'Run the module again' : 'Start the module') + '</button>' +
+      '<span class="hint-lite">' + cleared + ' of ' + ch.drills.length +
+      ' cleared, or jump straight to any drill below</span></div>';
 
-    h += '<div class="rows">';
+    h += '<div class="rows" style="margin-top:14px">';
     ch.drills.forEach((did, i) => {
       const d = V.data.drills[did];
       if (!d) return;
@@ -180,39 +289,53 @@
   let RUN = null;
 
   V.runList = function (which, startAt) {
-    let ids, title;
-    if (which === 'review') { ids = V.weakItems(); title = 'Review queue'; }
-    else {
+    let ids, title, chapterId = null;
+    const set = QUICK.find(s => s.id === which);
+    if (which === 'review') {
+      ids = V.weakItems(); title = 'Review queue';
+    } else if (set) {
+      ids = V.byKind(set.kind);
+      if (set.kind === 'mc') ids = V.shuffle(ids);   // quickfire, so mix them up
+      title = set.title;
+    } else {
       const ch = V.data.chapters.find(c => c.id === which);
-      ids = ch.drills.slice(); title = ch.title;
+      if (!ch) return home();
+      ids = ch.drills.slice(); title = ch.title; chapterId = ch.id;
     }
     if (!ids.length) return home();
-    RUN = { ids, title, at: startAt || 0, back: which === 'review' ? 'home' : which, kind: which };
+    RUN = { ids, title, at: startAt || 0, chapterId, kind: which, right: 0, marked: 0 };
     step();
   };
 
   function step() {
     if (!RUN || RUN.at >= RUN.ids.length) {
-      const t = RUN ? RUN.title : '';
-      const back = RUN && RUN.kind !== 'review' ? RUN.kind : null;
+      const r = RUN || {};
+      const back = r.chapterId;
+      const scored = r.marked > 0
+        ? '<div class="scoregrid"><div><div class="k">Cleared first time</div><div class="v">' +
+        r.right + ' / ' + r.marked + '</div></div><div><div class="k">That is</div><div class="v">' +
+        Math.round(r.right / r.marked * 100) + '%</div></div></div>' : '';
       RUN = null;
-      let h = '<h1>Module complete</h1><p class="sub">' + t + ': every drill in the list is done. ' +
-        'Anything you revealed is now in the review queue on the desk.</p><div class="btnrow">' +
+      SC().innerHTML = '<h1>' + (r.title || 'Done') + ': finished</h1>' +
+        '<p class="sub">Every drill in the list is done. Anything you revealed or missed is waiting in ' +
+        'the review queue on the desk.</p><div class="card">' + scored + '</div><div class="btnrow">' +
         '<button class="btn" onclick="VBM.go(\'home\')">Back to the desk</button>' +
-        (back ? '<button class="btn ghost" onclick="VBM.go(\'chapter\',\'' + back + '\')">Review this module</button>' : '') +
+        (back ? '<button class="btn ghost" onclick="VBM.go(\'chapter\',\'' + back + '\')">See this module</button>' : '') +
+        '<button class="btn ghost" onclick="VBM.runList(\'' + (r.kind || 'mc') + '\')">Run it again</button>' +
         '</div>';
-      SC().innerHTML = h;
       return;
     }
     const id = RUN.ids[RUN.at];
-    const hdr = '<div class="eyebrow plain" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">' +
-      '<button class="btn ghost sm" onclick="VBM.go(\'home\')">← desk</button>' +
-      '<span>' + RUN.title + ' · ' + (RUN.at + 1) + ' of ' + RUN.ids.length + '</span></div>';
+    const hdr = '<div class="topbar">' +
+      '<button class="btn ghost sm" onclick="VBM.go(\'home\')">← The desk</button>' +
+      '<span>' + RUN.title + ' · ' + (RUN.at + 1) + ' of ' + RUN.ids.length +
+      (RUN.marked ? ' · ' + RUN.right + ' right' : '') + '</span></div>';
     V.Drill.start(id, {
       mode: 'practice',
       label: RUN.title,
       last: RUN.at === RUN.ids.length - 1,
       headerHtml: hdr,
+      onDone: s => { if (RUN) { RUN.marked++; if (s >= 0.999) RUN.right++; } },
       onNext: () => { RUN.at++; step(); }
     });
   }
@@ -223,7 +346,7 @@
     if (!x) return home();
     const flat = x.parts.reduce((a, p) => a + p.drills.length, 0);
     const pts = x.parts.reduce((a, p) => a + p.drills.reduce((s, d) => s + (V.data.drills[d].pts || 0), 0), 0);
-    let h = '<div class="eyebrow">Exam room</div><h1>' + x.title + '</h1>';
+    let h = topbar('Exam room') + '<h1>' + x.title + '</h1>';
     h += '<p class="sub">' + x.sub + '</p>';
     h += '<div class="card"><div class="scoregrid">' +
       '<div><div class="k">Questions</div><div class="v">' + flat + '</div></div>' +
@@ -294,7 +417,7 @@
     V.S.xp += Math.round(got / 4);
     V.save(); V.rail();
 
-    let h = '<div class="eyebrow">Paper handed in</div><h1>' + x.title + '</h1>';
+    let h = topbar('Paper handed in') + '<h1>' + x.title + '</h1>';
     h += '<div class="card"><div class="bigscore">' + Math.round(got * 10) / 10 + ' <span style="font-size:20px;color:var(--muted)">/ ' + tot + '</span></div>';
     h += '<div class="scoregrid">' +
       '<div><div class="k">Score</div><div class="v">' + pct + '%</div></div>' +
@@ -342,7 +465,7 @@
   /* ============================================================ PATTERN BOARD */
   function pattern() {
     const P = V.data.pattern;
-    let h = '<div class="eyebrow">Reference</div><h1>Pattern Board</h1>';
+    let h = topbar('Reference') + '<h1>Pattern Board</h1>';
     h += '<p class="sub">The course Q&amp;A slide states the paper will be "equivalent in structure, content and ' +
       'level of detail to previous exams". If that still holds for your semester, the past papers are a ' +
       'specification rather than practice. Here is what they actually contain, verify the format against ' +
@@ -412,7 +535,7 @@
 
   /* ============================================================ VAULT */
   function vault() {
-    let h = '<div class="eyebrow">Reference</div><h1>The Vault</h1>';
+    let h = topbar('Reference') + '<h1>The Vault</h1>';
     h += '<p class="sub">No formula sheet is permitted. Only a non-programmable calculator and a dictionary. ' +
       'Everything below has to be in your head. Reading it is not learning it: use the ' +
       '<b>write the formula</b> drills in the modules to produce each one from a blank page.</p>';
@@ -453,7 +576,7 @@
   /* ============================================================ INTUITION DECK */
   function intuition() {
     const I = V.data.intuition || {};
-    let h = '<div class="eyebrow">Reference</div><h1>Intuition Deck</h1>';
+    let h = topbar('Reference') + '<h1>Intuition Deck</h1>';
     h += '<p class="sub">Twenty-two formulas and procedures, each with the picture that makes it '
       + 'rebuildable rather than merely rememberable. If you can say the bold line out loud, you can '
       + 'reconstruct the formula on a blank page, which is the only thing that matters in a closed-book exam.</p>';
