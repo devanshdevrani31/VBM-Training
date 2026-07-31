@@ -256,7 +256,7 @@
 
     {
       id: 'dep-mc-roiirr', kind: 'mc', chapter: 'depreciation', pts: 2,
-      title: 'MC: the relative benefit depreciation rule and ROI',
+      title: 'SS17 MC 3: depreciation rules',
       source: 'SS17 MC Q3 · answer per the blueprint\'s reading of the official key',
       q: 'Which of the following statements is <em>true</em>?',
       opts: [

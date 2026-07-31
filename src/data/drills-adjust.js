@@ -302,7 +302,7 @@
     /* ------------------------------------------------ MC on the two traps */
     {
       id: 'adj-mc-tax', kind: 'mc', chapter: 'adjust', pts: 2,
-      title: 'MC: does the R&D adjustment get taxed?',
+      title: 'Spot the mistake: does the R&D adjustment get taxed?',
       q: 'You are capitalising R&D of 30,000 with total amortisation of 27,000 this year, at a tax rate of 40 %. Which treatment matches the official solutions?',
       opts: [
         { t: 'NOPAT adjustment = +30,000 − 27,000 = +3,000', ok: true, y: 'Correct. Every official key adds the gross expense and subtracts the gross amortisation. No tax factor.' },
@@ -315,7 +315,7 @@
 
     {
       id: 'adj-mc-timing', kind: 'mc', chapter: 'adjust', pts: 2,
-      title: 'MC: when does the first charge fall?',
+      title: 'Spot the mistake: when does the first charge fall?',
       q: 'A spend of 30,000 in 2006 is amortised straight-line over three years. Under the convention stated on every past paper, which years carry a charge?',
       opts: [
         { t: '2006, 2007, 2008', ok: true, y: 'Correct. "The first depreciation charge is due in the same year the expense takes place."' },

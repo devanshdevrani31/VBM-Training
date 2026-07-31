@@ -214,14 +214,13 @@
 
     {
       id: 'rat-mc-cash', kind: 'mc', chapter: 'ratios', pts: 2,
-      title: 'MC: the cash cycle',
-      source: 'SS17 MC Q5 · official solution',
+      title: 'SS17 MC 5: the cash cycle',
+      source: 'SS17 MC Q5 · options transcribed from the paper',
       q: 'Which of the following statements is <em>true</em>? The length of the cash cycle equals…',
       opts: [
-        { t: '…the length of the operating cycle minus the number of days payables are outstanding.', ok: true, y: 'Correct: the definition.' },
         { t: '…the length of the operating cycle plus the number of days receivables are outstanding.', ok: false, y: 'Receivables days are already <i>inside</i> the operating cycle. Adding them again double-counts.' },
         { t: '…the number of days inventories are in stock minus the number of days payables are outstanding.', ok: false, y: 'This drops the receivables days entirely, but a sale on credit still delays the cash.' },
-        { t: '…the length of the operating cycle plus the number of days payables are outstanding.', ok: false, y: 'Wrong sign. Supplier credit <b>shortens</b> the period you must self-finance.' }
+        { t: '…the length of the operating cycle minus the number of days payables are outstanding.', ok: true, y: 'Correct: the definition. Supplier credit shortens the period you must self-finance.' }
       ],
       why: 'Do not memorise four sentences, <b>rebuild the cycle from the story</b> and every option answers itself. Cash goes out when you pay the supplier; cash comes back when the customer pays you. Inventory days and receivables days both delay the inflow, so they <b>add</b>. Payables days delay your outflow, so they <b>subtract</b>. Any option that adds payables days, or forgets receivables days, contradicts the story.'
     }

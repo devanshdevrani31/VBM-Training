@@ -88,8 +88,14 @@
   /* Cross-course practice sets: one question type, every module at once. */
   const QUICK = [
     {
-      id: 'mc', kind: 'mc', icon: '◉', title: 'Multiple choice',
-      blurb: 'Every MC item in the course, shuffled. This is the whole 20-point Part I plus the trap bank.'
+      id: 'mc', kind: 'mc', icon: '◉', title: 'Exam multiple choice',
+      blurb: 'Every MC question from every past paper, in the three-option format the exam uses. Part I is 20 points.',
+      ids: () => V.data.examMc.slice(), shuffle: true
+    },
+    {
+      id: 'traps', kind: 'mc', icon: '⚠', title: 'Spot the mistake',
+      blurb: 'Not exam format. A worked extract with one broken line, from the examiner\'s own list of what students get wrong.',
+      ids: () => V.byKind('mc').filter(id => V.data.examMc.indexOf(id) < 0)
     },
     {
       id: 'formula', kind: 'formula', icon: 'ƒ', title: 'Formulas',
@@ -184,11 +190,27 @@
       (nr ? ', ' + (nr.at - V.S.xp) + ' more to reach <b>' + nr.name + '</b>' : ', top rank') +
       (V.S.best > 1 ? ' · best streak ' + V.S.best : '') + '</div>';
 
+    /* ---- reference sits above the drilling: no formula sheet in the exam, so
+           the Vault is the thing you reach for most often ---- */
+    h += '<div class="eyebrow">Reference <span class="hint-lite">keep these open while you drill</span></div>';
+    h += '<div class="rows">';
+    h += '<button class="row" onclick="VBM.go(\'vault\')"><span class="idx">ƒ</span><span class="body">' +
+      '<span class="t">The Formula Vault</span><span class="d">Every formula you have to memorise, tier by tier, ' +
+      'with the traps attached. No formula sheet is permitted in the exam, so all of this has to end up in ' +
+      'your head.</span></span><span class="rt"><span class="badge t1">start here</span></span></button>';
+    h += '<button class="row" onclick="VBM.go(\'intuition\')"><span class="idx">✦</span><span class="body">' +
+      '<span class="t">Intuition Deck</span><span class="d">The mental picture behind every formula, in one pass. ' +
+      'Read this when a formula refuses to stick, or the night before as a warm-up.</span></span></button>';
+    h += '<button class="row" onclick="VBM.go(\'pattern\')"><span class="idx">▦</span><span class="body">' +
+      '<span class="t">Pattern Board</span><span class="d">All eight past papers mapped topic by topic, the ' +
+      'structural prediction, how marks are actually awarded, and the day-by-day plan.</span></span></button>';
+    h += '</div>';
+
     /* ---- practise one type across the whole course ---- */
     h += '<div class="eyebrow">Quick practice <span class="hint-lite">one type of question, every module at once</span></div>';
     h += '<div class="tiles">';
     for (const s of QUICK) {
-      const ids = V.byKind(s.kind);
+      const ids = s.ids ? s.ids() : V.byKind(s.kind);
       if (!ids.length) continue;
       const done = V.clearedOf(ids);
       h += '<button class="tile" onclick="VBM.runList(\'' + s.id + '\')">' +
@@ -232,18 +254,6 @@
       h += '<span class="rt"><span class="hit">' + x.minutes + ' min</span>' +
         (st ? '<span class="hit">best ' + st.best + '%</span>' : '') + '</span></button>';
     }
-    h += '</div>';
-
-    h += '<div class="eyebrow">Reference</div><div class="rows">';
-    h += '<button class="row" onclick="VBM.go(\'pattern\')"><span class="idx">▦</span><span class="body">' +
-      '<span class="t">Pattern Board</span><span class="d">All eight past papers mapped topic by topic, the structural prediction, ' +
-      'how marks are actually awarded, and the day-by-day plan.</span></span></button>';
-    h += '<button class="row" onclick="VBM.go(\'vault\')"><span class="idx">ƒ</span><span class="body">' +
-      '<span class="t">The Vault</span><span class="d">Every formula you must memorise, tier by tier, with the traps attached. ' +
-      'No formula sheet is permitted in the exam.</span></span></button>';
-    h += '<button class="row" onclick="VBM.go(\'intuition\')"><span class="idx">✦</span><span class="body">' +
-      '<span class="t">Intuition Deck</span><span class="d">The mental picture behind every formula, in one pass. ' +
-      'Read this when a formula refuses to stick, or the night before as a warm-up.</span></span></button>';
     h += '</div>';
 
     h += '<p class="footnote">Unofficial student project, not affiliated with TUM; your course material is the ' +
@@ -294,8 +304,8 @@
     if (which === 'review') {
       ids = V.weakItems(); title = 'Review queue';
     } else if (set) {
-      ids = V.byKind(set.kind);
-      if (set.kind === 'mc') ids = V.shuffle(ids);   // quickfire, so mix them up
+      ids = set.ids ? set.ids() : V.byKind(set.kind);
+      if (set.shuffle) ids = V.shuffle(ids);
       title = set.title;
     } else {
       const ch = V.data.chapters.find(c => c.id === which);

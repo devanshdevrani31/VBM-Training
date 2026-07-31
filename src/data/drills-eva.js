@@ -406,13 +406,13 @@
     /* ------------------------------------------------ 8. concept MC */
     {
       id: 'eva-mc-negative', kind: 'mc', chapter: 'eva', pts: 2,
-      title: 'MC: can EVA be negative?',
-      source: 'SS17 Q1 and SS19 Q1 · official solutions',
+      title: 'SS17 MC 1: the EVA identities',
+      source: 'SS17 MC Q1 · options transcribed from the paper',
       q: 'Which of the following statements is <em>wrong</em>?',
       opts: [
-        { t: 'The present value of future EVAs minus the value of the invested capital is equal to the present value of future free cash flows.', ok: true, y: 'Wrong, so this is the answer. The identity <b>adds</b> invested capital: PV(future EVAs) <b>+</b> Invested Capital = PV(future FCFs).' },
-        { t: 'The market value of a firm is equal to the present value of future EVAs plus the value of the invested capital.', ok: false, y: 'True. This is the MVA identity, market value = invested capital + PV of future EVAs.' },
-        { t: 'The EVA cannot be negative if the RONA exceeds the WACC and if the value of the invested capital is positive.', ok: false, y: 'True. EVA = (RONA − WACC) × IC, so a positive spread times a positive base is strictly positive.' }
+        { t: 'The present value of future EVAs plus the value of the invested capital is equal to the present value of future free cash flows.', ok: false, y: 'True. This is the EVA to DCF bridge.' },
+        { t: 'The market value of a firm is equal to the present value of future EVAs.', ok: true, y: 'Wrong, so this is the answer. It leaves out the invested capital: market value = invested capital <b>plus</b> the PV of future EVAs.' },
+        { t: 'The EVA cannot be negative if the RONA exceeds the WACC and if the invested capital is positive.', ok: false, y: 'True. EVA = (RONA − WACC) × IC, so a positive spread times a positive base is strictly positive.' }
       ],
       why: 'Both identities in this item come from the same equation, so learn it as one line: <b>PV(future EVAs) + Invested Capital = PV(future FCFs) = Market value of the firm.</b> The examiner\'s favourite mutilations are (a) flipping the plus to a minus, and (b) dropping invested capital altogether, "market value equals the PV of future EVAs" on its own is <b>wrong</b>, and it appeared in exactly that form on SS17.'
     },

@@ -246,7 +246,7 @@
     /* ------------------------------------------------ MC items */
     {
       id: 'cong-mc-preinreich', kind: 'mc', chapter: 'congruence', pts: 2,
-      title: 'MC: the Preinreich-Lücke theorem',
+      title: 'Spot the mistake: the Preinreich-Lücke theorem',
       source: 'Consistent with SS17 MC Q3 and SS19 Q4.4',
       q: 'You computed the residual incomes of a project under straight-line depreciation, then again under RBCAR. What is true of the two present values?',
       opts: [

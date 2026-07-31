@@ -165,7 +165,7 @@
     /* ------------------------------------------------ the payout rule varies */
     {
       id: 'comp-mc-payout', kind: 'mc', chapter: 'comp', pts: 3,
-      title: 'MC: which payout rule is this?',
+      title: 'Spot the mistake: which payout rule is this?',
       source: 'Rules quoted verbatim from SS19 Q3, SS17 Q2 and Problem Set 3',
       q: 'The bonus bank stands at 60,000 after this year\'s earned bonus. The paper says: <em>"the target bonus of 35,000 plus 20 % of the remaining amount of the bonus bank is paid out."</em> What is paid?',
       opts: [

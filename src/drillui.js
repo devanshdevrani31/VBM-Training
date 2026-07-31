@@ -163,41 +163,89 @@
     init() { R.order = V.shuffle(R.drill.opts.map((_, i) => i)); R.pick = null; },
     paint() {
       const d = R.drill;
+      /* Marked only once you have committed, and only in practice mode. */
+      const marked = R.mode === 'practice' && R.done;
       let b = '<div class="opts">';
-      /* Exam mode marks your choice but never says whether it was right. */
-      const marked = R.mode === 'practice' && (R.done || R.pick != null);
       R.order.forEach((oi, n) => {
         const o = d.opts[oi];
-        let cls = '';
-        if (marked) { if (o.ok) cls = 'right'; else if (R.pick === oi) cls = 'wrong'; }
-        else if (R.pick === oi) cls = 'sel';
+        let cls = '', mark = '';
+        if (marked) {
+          if (o.ok) { cls = 'right'; mark = '<span class="mark">✓</span>'; }
+          else if (R.pick === oi) { cls = 'wrong'; mark = '<span class="mark">✗</span>'; }
+          else cls = 'muted';
+        } else if (R.pick === oi) cls = 'sel';
         b += '<button class="opt ' + cls + '"' + (R.done ? ' disabled' : '') +
-          ' onclick="VBM.Drill.act(\'pick\',' + oi + ')"><span class="key">' +
-          String.fromCharCode(65 + n) + '</span><span>' + o.t +
-          (marked && o.y ? '<span class="oy">' + o.y + '</span>' : '') +
-          '</span></button>';
+          ' onclick="VBM.Drill.act(\'pick\',' + oi + ')">' +
+          '<span class="key">' + String.fromCharCode(65 + n) + '</span>' +
+          '<span class="ot">' + o.t + '</span>' + mark + '</button>';
       });
-      document.getElementById('drillhost').innerHTML = shell(b + '</div>');
+      b += '</div>';
       if (!R.done) {
-        if (R.mode === 'exam') btns([{ t: R.last ? 'Submit paper' : 'Submit & continue', a: 'submit', dis: R.pick == null }]);
-        else btns([]);
+        b += '<div class="kbhint">Tap an answer, or press <kbd>A</kbd>' +
+          (R.order.length > 1 ? ' to <kbd>' + String.fromCharCode(64 + R.order.length) + '</kbd>' : '') +
+          '. Then <kbd>Enter</kbd> to ' + (R.mode === 'exam' ? 'submit' : 'commit') + '.</div>';
       }
+      document.getElementById('drillhost').innerHTML = shell(b);
+      if (!R.done) {
+        btns([{
+          t: R.mode === 'exam' ? (R.last ? 'Submit paper' : 'Submit & continue') : 'Check answer',
+          a: R.mode === 'exam' ? 'submit' : 'check', dis: R.pick == null
+        }]);
+      }
+    },
+    /* One compact verdict instead of an explanation bolted under every option. */
+    verdict(ok) {
+      const d = R.drill;
+      const picked = d.opts[R.pick], right = d.opts.find(o => o.ok);
+      const letter = o => String.fromCharCode(65 + R.order.indexOf(d.opts.indexOf(o)));
+      if (ok) {
+        return coach('ok', 'Correct: ' + letter(right),
+          right.y ? '<p>' + right.y + '</p>' : '<p>That is the one.</p>');
+      }
+      return coach('bad', 'Not that one',
+        '<p><b>You picked ' + letter(picked) + '.</b> ' + (picked.y || '') + '</p>' +
+        '<p><b>The answer is ' + letter(right) + ':</b> ' + right.t + '</p>' +
+        (right.y ? '<p>' + right.y + '</p>' : ''));
     },
     act(a, arg) {
       if (a === 'pick') {
         if (R.done) return;
         R.pick = arg;
-        if (R.mode === 'exam') { KIND.mc.paint(); return; }
-        const ok = R.drill.opts[arg].ok;
-        if (!ok) R.wrongEver = true;
-        finish(ok ? 1 : 0);
-        KIND.mc.paint();
-        paintDone();
+        KIND.mc.paint();          // select only, so a mis-tap is not fatal
         return;
       }
-      if (a === 'submit') { finish(R.drill.opts[R.pick] && R.drill.opts[R.pick].ok ? 1 : 0); KIND.mc.paint(); paintDone(); }
+      if (a === 'check' || a === 'submit') {
+        if (R.pick == null) return;
+        const ok = !!R.drill.opts[R.pick].ok;
+        if (!ok) R.wrongEver = true;
+        finish(ok ? 1 : 0, KIND.mc.verdict(ok));
+        KIND.mc.paint(); paintDone();
+      }
     }
   };
+
+  /* Keyboard for multiple choice: letters or digits to pick, Enter to commit
+     and again to move on. Rapid-fire practice is unusable without it. */
+  document.addEventListener('keydown', function (e) {
+    if (!R || R.drill.kind !== 'mc') return;
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    const tag = (e.target && e.target.tagName || '').toLowerCase();
+    if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
+    const k = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+    let idx = -1;
+    if (/^[1-9]$/.test(k)) idx = +k - 1;
+    else if (/^[a-z]$/.test(k)) idx = k.charCodeAt(0) - 97;
+    if (idx >= 0 && idx < R.order.length) {
+      e.preventDefault();
+      V.Drill.act('pick', R.order[idx]);
+      return;
+    }
+    if (k === 'Enter' || k === ' ') {
+      e.preventDefault();
+      if (R.done) V.Drill.act('next');
+      else if (R.pick != null) V.Drill.act(R.mode === 'exam' ? 'submit' : 'check');
+    }
+  });
 
   /* =======================================================================
      KIND: formula  (token assembly)

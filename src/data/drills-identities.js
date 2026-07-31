@@ -63,13 +63,13 @@
 
     {
       id: 'id-mc-fcf', kind: 'mc', chapter: 'identities', pts: 2,
-      title: 'MC: free cash flow from NOPAT',
-      source: 'SS19 MC Q2 · official solution',
-      q: 'To calculate the free cash flow from NOPAT, you <em>need</em> to…',
+      title: 'SS17 MC 4: free cash flow from NOPAT',
+      source: 'SS17 MC Q4 · options transcribed from the paper (SS19 MC Q2 asks the same thing)',
+      q: 'Which of the following statements is <em>true</em>? For the calculation of the free cash flow, starting from NOPAT…',
       opts: [
-        { t: '… subtract capital expenditures from NOPAT.', ok: true, y: 'Correct. CapEx is a genuine cash outflow that never appears in NOPAT.' },
-        { t: '… add back tax payments to NOPAT.', ok: false, y: 'No. Taxes really are paid in cash, so they stay subtracted. FCF is an after-tax measure.' },
-        { t: '… subtract depreciation and amortisation from NOPAT.', ok: false, y: 'Wrong direction. NOPAT is already after D&A, and D&A is not a cash flow, so it must be <b>added back</b>.' }
+        { t: '…depreciation and amortization has to be added to NOPAT.', ok: true, y: 'True. NOPAT is already after D&A, and D&A is not a cash outflow, so it comes back.' },
+        { t: '…depreciation and amortization has to be subtracted from NOPAT.', ok: false, y: 'Wrong direction. It has already been subtracted once, on the way to NOPAT.' },
+        { t: '…the tax shield has to be subtracted from NOPAT.', ok: false, y: 'The tax shield belongs to the NOPAT ladder itself, not to the cash-flow bridge that starts from NOPAT.' }
       ],
       why: 'The test is simply "did cash actually move?" <b>D&A</b>: no cash moved, and it has already been deducted, so add it back. <b>CapEx</b>: cash left the business and nothing has deducted it yet, so subtract it. <b>ΔWCR</b>: cash is tied up in inventory and receivables, so subtract an increase. <b>Taxes</b>: cash left, already deducted, so leave them alone.<br><br>Apply that one question to each line and you never need to memorise the ladder as a list.'
     },
